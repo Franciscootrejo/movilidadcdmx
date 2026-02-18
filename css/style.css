@@ -1,0 +1,31 @@
+/*
+- Así se define una regla CSS:
+slector {
+    propiedad: vavlor;
+}
+*/
+html {
+    font-size: 100%;
+}
+body{
+    background-color: hwb(0 22% 78% / 0.939);
+    color: rgb(60, 255, 0);
+}
+
+h1, h2, h3 {
+    font-family: "giramisu-variable", sans-serif;
+    font-variation-settings: "wdth" 50, "slnt" 0;
+    font-size: 6rem;
+}
+
+h2 {
+
+    font-size: 3rem; 
+    font-variation-settings: "wdth" 80, "slnt" 30;
+}
+
+h3 {
+
+    font-size: 3rem; 
+    font-variation-settings: "wdth" 80, "slnt" -26;
+}
