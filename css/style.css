@@ -4,14 +4,24 @@ slector {
     propiedad: vavlor;
 }
 */
+:root {
+    --text-color: rgb(60, 255, 0);
+    --bg-color:hwb(0 22% 78% / 0.939);
+    --accent-color: hwb(330 0% 0% / 0.939);
+    --title-font: "giramisu-variable", sans-serif;
+    --text-font: "parabolica", sans-serif;
+}
 html {
     font-size: 100%;
 }
 body{
-    background-color: hwb(0 22% 78% / 0.939);
-    color: rgb(60, 255, 0);
+    font-family: var(--text-font);
+    background-color: var( --bg-color);
+    color: var(--text-color)
 }
-
+a {
+    color: var(--accent-color)
+}
 h1, h2, h3 {
     font-family: "giramisu-variable", sans-serif;
     font-variation-settings: "wdth" 50, "slnt" 0;
