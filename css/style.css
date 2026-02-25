@@ -20,6 +20,16 @@ body{
     color: var(--text-color);
     font-size: 1.4rem;
 }
+main {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+}
+p, li{
+
+    max width: 60ch;
+}
+
 a {
     color: var(--accent-color)
 }
