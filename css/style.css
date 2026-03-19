@@ -15,9 +15,9 @@ slector {
 } 
 
 :root {
-    --text-color: rgb(60, 255, 0);
+    --text-color: rgb(255, 0, 162);
     --bg-color:hwb(0 22% 78% / 0.939);
-    --accent-color: hwb(330 0% 0% / 0.939);
+    --accent-color: rgb(255, 251, 0);
     --title-font: "owltail", sans-serif;
     --text-font: "parabolica", sans-serif;
 }
