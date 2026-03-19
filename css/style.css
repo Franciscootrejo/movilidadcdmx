@@ -4,11 +4,21 @@ slector {
     propiedad: vavlor;
 }
 */
+
+@font-face {
+    font-family: 'owltail';
+    src: url('owltailbrush-regular-webfont.woff2') format('woff2'),
+         url('owltailbrush-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+} 
+
 :root {
     --text-color: rgb(60, 255, 0);
     --bg-color:hwb(0 22% 78% / 0.939);
     --accent-color: hwb(330 0% 0% / 0.939);
-    --title-font: "giramisu-variable", sans-serif;
+    --title-font: "owltail", sans-serif;
     --text-font: "parabolica", sans-serif;
 }
 html {
@@ -34,9 +44,10 @@ a {
     color: var(--accent-color)
 }
 h1, h2, h3 {
-    font-family: "giramisu-variable", sans-serif;
+    font-family: var(--title-font), sans-serif;
     font-variation-settings: "wdth" 50, "slnt" 0;
     font-size: 6em;
+    font-weight: 100;
 }
 
 h1 {
