@@ -11,7 +11,6 @@ slector {
          url('owltailbrush-regular-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
-
 } 
 
 :root {
@@ -88,7 +87,18 @@ h1 small {
 .hero p::first-line {
     font-size: .8em;
 }
-
+.hero footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;text-align: center;
+    height: 8%;text-align: center;
+    background-color:rgb(255, 251, 0);
+    font-family: var(--title-font), sans-serif;
+    font-size: 4em; 
+    font-variation-settings: "wdth" 80, "slnt" 30;
+    line-height: 0.7
+}
 h2 {
 
     font-size: 18em; 
