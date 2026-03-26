@@ -26,7 +26,7 @@ slector {
     box-sizing: border-box;
 }
 html {
-    font-size: 8px;
+    font-size: 100%;
 }
 body {
     font-family: var(--text-font);
@@ -49,10 +49,14 @@ main {
     max-width: 960px;
     margin: 0px auto;
     min-height: 100dvh;
+}
+
+.hero-body main {
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 p, li{
     max-width: 65ch;
 }
@@ -69,7 +73,7 @@ h1, h2, h3, h4, h5, h6{
 }
 
 h1 {
-    font-size: min(35vw, 25em);
+    font-size: min(35vw, 12.5em);
     line-height: .8em;
     margin: 0;
     text-transform: uppercase;
@@ -84,7 +88,7 @@ h1 small {
     padding: 1em;
 }
 .hero p {
-    font-size: min(10vw, 7em);
+    font-size: min(10vw, 3.5em);
     font-variation-settings: "wdth" 80, "slnt" 30;
     line-height: 0.7;
     font-family: var(--title-font), sans-serif;
@@ -105,7 +109,7 @@ h1 small {
     text-align: center;
     background-color:rgb(255, 251, 0);
     font-family: var(--title-font), sans-serif;
-    font-size: 4em;
+    font-size: 2em;
     font-variation-settings: "wdth" 80, "slnt" 30;
     line-height: 1.2em;
     display: block;
