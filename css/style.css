@@ -16,7 +16,7 @@ slector {
 :root {
     --text-color: rgb(255, 251, 0);
     --bg-color:hwb(0 22% 78% / 0.939);
-    --accent-color: rgb(255, 0, 221);
+    --accent-color: rgb(255, 251, 0);
     --title-font: "owltail", sans-serif;
     --text-font: "parabolica", sans-serif;
     --text-shadow-color: rgb(255, 0, 0);
@@ -27,6 +27,7 @@ slector {
 }
 html {
     font-size: 100%;
+    scroll-behavior: smooth;
 }
 body {
     font-family: var(--text-font);
@@ -35,6 +36,45 @@ body {
     background-color: #000;
     margin: 0;
     padding: 0;
+}
+
+header {
+    width: 100%;
+    padding: 1em;
+    text-align: left;
+}
+
+main {
+
+}
+
+nav {
+    text-align: left;
+    color: red;
+    position: sticky;
+    top: 0;
+}
+
+nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: min(5vw, 2em);
+    font-weight: bold;
+    margin-right: 1em;
+    font-family: var(--title-font), sans-serif;
+}
+
+@media screen and (min-width: 600px) {
+    body {
+        display: flex;
+    }
+    header {
+        width: 50%;
+    }
+    main {
+        width: 50%;
+    }
+    
 }
 
 body.hero-body {
@@ -49,6 +89,7 @@ main {
     max-width: 960px;
     margin: 0px auto;
     min-height: 100dvh;
+    padding: 1em;
 }
 
 .hero-body main {
@@ -122,12 +163,7 @@ h2 {
     line-height: 0.7
 }
 
-h3 {
-
-    font-size: 4em; 
-    font-variation-settings: "wdth" 80, "slnt" -26;
-    line-height: 1em
-}
+h3 {font-size: min(8vw, 4em);font-variation-settings: "wdth" 80, "slnt" -26;line-height: 1em}
 
 h4 {
 
