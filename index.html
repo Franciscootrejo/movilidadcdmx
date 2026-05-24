@@ -1,3 +1,9 @@
+<!--
+    PORTADA DEL PROYECTO
+    - Cambia el titulo de la pestana en la etiqueta <title>.
+    - Cambia el logo en el <img> de .brand-logo.
+    - Cambia el video de fondo en el <source> con clase .hero-video.
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,29 +11,78 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CAMBIAR: titulo que aparece en la pestana del navegador. -->
     <title>Movilidad CDMX | CENTRO | Dieño, Cine y Televisión</title>
     <link rel="stylesheet" href="https://use.typekit.net/ivu6xvr.css">
     <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body class="hero-body">
+    <!-- VIDEO DE ENTRADA: muted + autoplay + playsinline permiten que se reproduzca solo en navegadores moviles. -->
+    <video class="hero-video" autoplay muted loop playsinline aria-hidden="true">
+        <source src="./ims/video_entrada.MOV">
+    </video>
+    <button class="hero-sound-toggle" type="button" aria-pressed="false" aria-label="Activar sonido" title="Activar sonido">
+        <img class="hero-sound-icon" src="./ims/svg/sonido_off.svg" alt="" aria-hidden="true">
+    </button>
+
+    <header class="topbar">
+        <!-- MENU DE PORTADA: cada link abre docs/index.html en una seccion especifica. -->
+        <details class="menu">
+            <summary aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </summary>
+            <nav class="menu-panel" aria-label="Secciones">
+                <!-- CAMBIAR: textos del menu. El #acerca/#cartel/#protesta debe coincidir con los id de docs/index.html. -->
+                <a href="./docs/index.html#acerca">Acerca del proyecto</a>
+                <a href="./docs/index.html#cartel">Crea tu cartel</a>
+                <a href="./docs/index.html#protesta">Protesta</a>
+            </nav>
+        </details>
+
+        <!-- CAMBIAR LOGO: reemplaza ./ims/logo.png por otro archivo si cambias la marca. -->
+        <a class="brand-logo" href="#inicio" aria-label="Puesto al paso">
+            <img src="./ims/logo.png" alt="Puesto al paso">
+        </a>
+    </header>
+
     <main>
-        <section class="hero">
-            <h1>Puesto <small>al paso</small></h1>
-            <p>Comercio ambulante como parte <br>de la movilidad peatonal.</p>
-            <!--
-                <article>
-                    <P>En CDMX, puestos ambulantes estigmatizados motivan políticas que ignoran dinámicas peatonales; estudio revela infraestructura urbana.</P>
-                    <p>María Labarthe y Francisco Trejo</p>
-                </article>
-            -->
-            <footer>
-                <a href="./docs/" title="Documentación Conoce el proyecto">
-                    Conoce el proyecto
-                </a>
-            </footer>
+        <!-- La portada visual usa el video .hero-video como fondo. -->
+        <section class="hero" id="inicio">
         </section>
     </main>
+
+    <!-- CAMBIAR FOOTER: firma escondida al final de la portada. -->
+    <footer class="site-footer">
+        Proyecto movilidad 2026 | Francisco Trejo y María Labarthe
+    </footer>
+
+    <script>
+        const heroVideo = document.querySelector('.hero-video');
+        const soundToggle = document.querySelector('.hero-sound-toggle');
+        const soundIcon = document.querySelector('.hero-sound-icon');
+
+        soundToggle.addEventListener('click', async () => {
+            const shouldPlaySound = heroVideo.muted;
+
+            heroVideo.muted = !shouldPlaySound;
+            heroVideo.volume = shouldPlaySound ? 1 : 0;
+
+            try {
+                await heroVideo.play();
+            } catch (error) {
+                heroVideo.muted = true;
+            }
+
+            soundIcon.src = heroVideo.muted ? './ims/svg/sonido_off.svg' : './ims/svg/sonido_on.svg';
+            const toggleLabel = heroVideo.muted ? 'Activar sonido' : 'Silenciar';
+            soundToggle.setAttribute('aria-label', toggleLabel);
+            soundToggle.title = toggleLabel;
+            soundToggle.setAttribute('aria-pressed', String(!heroVideo.muted));
+        });
+    </script>
 </body>
 
 </html>

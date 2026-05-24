@@ -1,106 +1,150 @@
+<!--
+    PAGINA INTERNA / DOCUMENTACION
+    Se divide en tres secciones:
+    1. #acerca   - texto del proyecto, carrusel y conclusion.
+    2. #cartel   - herramienta para crear cartel.
+    3. #protesta - muro donde aparece el cartel publicado.
+
+    Para cambiar textos, edita directamente los h1, h2, p y botones de este archivo.
+    Para cambiar imagenes de fondo, ve a css/style.css y busca "CAMBIAR FONDO".
+    Para cambiar fotos del carrusel, ve a js/main.js y busca "CAMBIAR FOTOS DEL CARRUSEL".
+-->
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
+    <!-- Configuracion basica de la pagina -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CAMBIAR: titulo que aparece en la pestana del navegador. -->
     <title>Documentación Movilidad CDMX</title>
     <link rel="stylesheet" href="https://use.typekit.net/ivu6xvr.css">
     <link rel="stylesheet" href="../css/style.css">
+    <script defer src="../js/main.js"></script>
 </head>
-<body>
-    <header>
-        <a href="../" title="Ir a Documentación">Inicio</a>
-        <h3>El comercio ambulante<br>de alimentos <br>como parte de la movilidad <br>peatonal en la CDMX</h3>
-        <p><em>Los puestos ambulantes de comida como infraestructura de la movilidad cotidiana</em></p>
-        <nav>
-            <ul>
-                <li>
-                    <a href="#introduccion">Introduccion</a>
-                </li>
-                <li>
-                    <a href="#justificacion">Justificacion</a>
-                </li>
-                <li>
-                    <a href="#marco">Marco</a>
-                </li>
-                <li>
-                    <a href="#metodologia">Metodologia</a>
-                </li>
-            </ul>
-        </nav>
+
+<body class="docs-page" id="top">
+    <!-- Barra superior con menu y logo -->
+    <header class="topbar docs-topbar">
+        <details class="menu">
+            <summary aria-label="Abrir menú">
+                <span></span>
+                <span></span>
+                <span></span>
+            </summary>
+            <nav class="menu-panel" aria-label="Secciones">
+                <!-- CAMBIAR: textos del menu. data-section debe coincidir con el id de cada <section>. -->
+                <button type="button" data-section="acerca">Acerca del proyecto</button>
+                <button type="button" data-section="cartel">Crea tu cartel</button>
+                <button type="button" data-section="protesta">Protesta</button>
+            </nav>
+        </details>
+
+        <!-- CAMBIAR LOGO: reemplaza ../ims/logo.png si cambias la marca. -->
+        <a class="brand-logo" href="../" aria-label="Puesto al paso">
+            <img src="../ims/logo.png" alt="Puesto al paso">
+        </a>
     </header>
-    <main>
-        <section id="introduccion">
-            <h3>Introduccion</h3>
-            <p><em>En la <b>Ciudad de México</b>, los puestos ambulantes de comida suelen ser estigmatizados como
-                    sinónimo de informalidad y desorden, lo que ha sustentado políticas de reordenamiento que buscan
-                    retirarlos del espacio público sin considerar que surgen de las dinámicas del tránsito peatonal y de
-                    necesidades materiales concretas.</p>
 
-            <p>Ante este contexto, la investigación plantea la pregunta: <b>¿Cómo los puestos ambulantes de comida en la
-                    Ciudad de México funcionan como infraestructura de movilidad en el contexto del tránsito peatonal
-                    urbano?4</b> </p>
-            <p>
-                Se desarrollará un estudio cualitativo de carácter descriptivo analítico que combinará revisión de
-                reportes periodísticos y testimonios digitales con entrevistas directas a vendedores y peatones
-                consumidores.
-            <p>
+    <!-- Contenido principal -->
+    <main class="docs-main">
+        <!-- SECCION ACERCA: cambia aqui el titulo principal y los dos parrafos de entrada. -->
+        <section id="acerca" class="docs-section is-active">
+            <div class="about-hero">
+                <h1 class="about-title">Acerca del proyecto</h1>
+                <div class="about-copy">
+                    <p>En la Ciudad de México, una gran parte del consumo cotidiano no ocurre dentro de espacios “formales”, sino en aquellos de tránsito. Se come al salir del metro, entre transbordos, antes de entrar a trabajar o de regresar a casa. No es una elección casual, responde a jornadas largas, tiempos de traslado extendidos y recursos económicos limitados.</p>
 
-            </p>Se espera demostrar que estos puestos operan como una <b>infraestructura flexible</b> que responde al
-            flujo y al tiempo de espera del peatón, contribuyendo a comprender su papel dentro del sistema de movilidad
-            cotidiana y evidenciando que su existencia responde a condiciones materiales y necesidades concretas, más
-            allá de ser considerados únicamente un problema de desorden urbano.</p>
-            </p>
+                    <p>En este contexto, los puestos ambulantes de comida no son un elemento aislado ni circunstancial. Aparecen donde hay flujo peatonal, concentración y espera. Su ubicación no es arbitraria, está directamente ligada a la movilidad.</p>
+                </div>
+            </div>
+
+            <!-- BLOQUE DEL CARRUSEL: las imagenes se cargan desde js/main.js. -->
+            <div class="about-exploracion" id="exploracion-campo">
+                <!-- CAMBIAR: subtitulo del carrusel. -->
+                <h2 class="about-subtitle">Exploración de campo</h2>
+                <div class="about-carousel" aria-label="Carrusel de exploración de campo">
+                    <!-- No poner imagenes aqui: JavaScript las crea automaticamente. -->
+                    <div class="about-carousel-track" id="about-carousel-track"></div>
+                </div>
+
+                <!-- CAMBIAR: texto de conclusion. Mantener 3 <p> si quieres conservar el ritmo actual. -->
+                <div class="about-statement">
+                    <p>Los puestos de comida no solo ocupan espacio público, responden a él.</p>
+                    <p>Funcionan como una infraestructura flexible que se adapta a los ritmos de la ciudad, a sus tiempos muertos y a sus desigualdades.</p>
+                    <p>Pensarlos únicamente como un problema de informalidad impide entender que su existencia está directamente vinculada a la forma en que se vive y se recorre la ciudad.</p>
+                </div>
+
+            </div>
         </section>
-        <section id="justificacion">
-            <h3>Justificacion</h3>
-            <p><em>El análisis de los <b>puestos ambulantes de comida</b> en la Ciudad de México permite replantear su
-                    papel dentro de la movilidad cotidiana al entenderlos no como un fenómeno aislado o informal, sino
-                    como una respuesta estructural a las dinámicas del tránsito peatonal.</p>
 
-            <p>Al adaptarse al flujo, a las concentraciones y a los tiempos de espera, estos puestos amplían la noción
-                de infraestructura urbana, evidenciando que el consumo forma parte del desplazamiento y que el peatón no
-                solo circula, sino que <b>resuelve necesidades básicas</b> —como la alimentación— en trayectos marcados
-                por jornadas extensas, traslados prolongados y recursos económicos limitados.</p>
+        <!-- SECCION CARTEL: herramienta para escribir, cambiar color y publicar cartel. -->
+        <section id="cartel" class="docs-section">
+            <div class="cartel-stage">
+                <div class="cartel-aside">
+                    <!-- CAMBIAR: titulo del modulo de cartel. Cada <span> es una linea. -->
+                    <h1 class="cartel-title"><span>*CREA TU*</span><span>CARTEL DE</span><span>PROTESTA</span></h1>
+                    <div class="cartel-title-ornaments" aria-hidden="true">
+                        <img class="cartel-title-ornament cartel-title-ornament--top" src="../ims/svg/subraya1.svg" alt="">
+                        <img class="cartel-title-ornament cartel-title-ornament--bottom" src="../ims/svg/subraya2.svg" alt="">
+                    </div>
 
-            <p>Este enfoque aporta a los <b>estudios de movilidad</b> al incorporar el comercio ambulante como
-                componente flexible del sistema peatonal y mediante la observación, el registro de flujos y mapeo,
-                permite demostrar su relación directa con la densidad y el ritmo urbano, cuestionando así los programas
-                de reordenamiento que los reducen a un problema de informalidad sin reconocer que su existencia responde
-                a contextos materiales y necesidades concretas de quienes habitan y transitan la ciudad.</p>
+                    <div class="cartel-guides" aria-hidden="true">
+                        <div class="cartel-guide cartel-guide--type">
+                            <p>¡Explora con la tipografía!</p>
+                            <img src="../ims/svg/flecha_recta.svg" alt="">
+                        </div>
+                        <div class="cartel-guide cartel-guide--color">
+                            <p>Elige el color de tu cartulina</p>
+                            <img src="../ims/svg/flecha_curva.svg" alt="">
+                        </div>
+                    </div>
+
+                    <!-- CONTROL: cambia la escala/tamano del texto escrito en la cartulina. -->
+                    <label class="cartel-scale" for="cartel-size">
+                        <span>Tamaño</span>
+                        <input id="cartel-size" type="range" min="0.95" max="1.55" step="0.01" value="1.15">
+                    </label>
+
+                    <!-- CONTROL: cambia el peso/variable visual de la tipografia del cartel. -->
+                    <label class="cartel-scale cartel-scale--font" for="cartel-font">
+                        <span>Variable</span>
+                        <input id="cartel-font" type="range" min="200" max="900" step="1" value="600">
+                    </label>
+
+                    <!-- CAMBIAR COLORES: edita data-cartel-color y --swatch con el mismo color. -->
+                    <div class="cartel-swatches" aria-label="Colores de cartulina">
+                        <button type="button" data-cartel-color="#d8ff00" aria-label="Cartulina amarillo fosforescente" style="--swatch: #d8ff00;"></button>
+                        <button type="button" data-cartel-color="#39ff14" aria-label="Cartulina verde fosforescente" style="--swatch: #39ff14;"></button>
+                        <button type="button" data-cartel-color="#ff2bd6" aria-label="Cartulina rosa fosforescente" style="--swatch: #ff2bd6;"></button>
+                    </div>
+                </div>
+
+                <!-- AREA EDITABLE: el usuario escribe aqui. El placeholder se cambia en data-placeholder. -->
+                <div class="cartel-board" aria-label="Cartulina editable">
+                    <div class="cartel-editor" contenteditable="true" spellcheck="false" data-placeholder="Escribe aquí"></div>
+                </div>
+            </div>
+
+            <!-- BOTON: se activa cuando hay texto y color seleccionado. -->
+            <button type="button" class="cartel-publish" id="cartel-publish" disabled>Publica y protesta</button>
         </section>
-        <section id="marco">
-            <h3>Marco teorico o conceptual</h3>
-            <p><b>Movilidad cotidiana:</b> La movilidad peatonal no se limita al desplazamiento, sino que incluye
-                tiempos de espera, pausas y concentraciones que estructuran prácticas como el consumo en tránsito.</p>
-            </p>Puestos ambulantes de comida: Los puestos ambulantes de comida constituyen una forma de comercio que
-            responde directamente a las condiciones materiales del peatón —jornadas extensas, traslados prolongados y
-            recursos limitados— ofreciendo <b>soluciones inmediatas y accesibles</b> dentro del recorrido cotidiano.</p>
-            </p>Infraestructura flexible: Los puestos ambulantes de comida en la Ciudad de México operan como
-            micro-infraestructuras adaptativas que se ubican y funcionan según el flujo, la densidad y el tiempo de
-            espera del peatón.</p>
-            </p>Reordenamiento y conflicto urbano: <b>Las políticas de reordenamiento</b> y las quejas de sectores que
-            no dependen de este tipo de consumo parten de una visión normativa del orden público que concibe a los
-            puestos como obstáculo, sin reconocer que su existencia responde a necesidades materiales específicas de
-            quienes sí consumen en tránsito</p>
-        </section>
-        <section id="metodologia">
-            <h3>Metodologia</h3>
-            <p><b>Tipo de estudio:</b>La investigación es de enfoque cualitativo y carácter descriptivo analítico, ya
-                que busca comprender cómo los puestos ambulantes de comida operan dentro de la movilidad peatonal y cómo
-                son experimentados tanto <b>por vendedores como por consumidores</b> en la Ciudad de México.</p>
-            <p><b>Tipo de estudio:</b>Se utilizará una combinación de análisis documental y trabajo de campo. Por un
-                lado, se revisarán reportes periodísticos, testimonios disponibles en plataformas digitales y
-                entrevistas publicadas en medios para identificar discursos sobre informalidad, reordenamiento y
-                movilidad. Por otro lado, se realizarán entrevistas directas a vendedores de puestos ambulantes y a
-                peatones que consumen en ellos, con el fin de conocer sus experiencias, dinámicas de operación y razones
-                de consumo en tránsito.</p>
-            <p><b>Técnicas de análisis:</b>La información recopilada será analizada mediante un enfoque de análisis
-                temático, identificando patrones relacionados con flujo peatonal, tiempo de espera, necesidad económica,
-                estigmatización y adaptación al espacio urbano. Se buscará contrastar los discursos institucionales y
-                mediáticos con las experiencias directas de vendedores y consumidores para evidenciar la relación entre
-                movilidad y comercio ambulante.</p>
+
+        <!-- SECCION PROTESTA: recibe los carteles publicados y permite moverlos. -->
+        <section id="protesta" class="docs-section">
+            <div class="protesta-stage">
+                <!-- Este h1 y texto estan ocultos visualmente, pero ayudan a estructura/accesibilidad. -->
+                <h1>Protesta</h1>
+                <p class="protesta-intro">Aquí aparece el cartel que publicaste para convertirlo en parte de la protesta.</p>
+                <div class="protesta-gallery-wrap">
+                    <!-- Aqui JavaScript inserta los carteles publicados. -->
+                    <div class="protesta-gallery" id="protesta-gallery" aria-live="polite">
+                        <p class="protesta-empty">Todavía no has publicado un cartel.</p>
+                    </div>
+                    <!-- Borra todos los carteles guardados en esta computadora/navegador. -->
+                    <button type="button" class="protesta-reset" id="protesta-reset">Reiniciar</button>
+                </div>
+            </div>
         </section>
     </main>
 </body>

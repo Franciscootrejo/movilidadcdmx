@@ -1,25 +1,41 @@
 /*
-- Así se define una regla CSS:
-slector {
-    propiedad: vavlor;
-}
+    GUIA RAPIDA PARA EDITAR ESTILOS
+    - Cambia colores generales en :root.
+    - Cambia imagenes de fondo buscando "CAMBIAR FONDO".
+    - Cambia espacios/tamanos de una seccion buscando el nombre de su bloque:
+      about, carousel, cartel, protesta, footer.
 */
 
+/* TIPOGRAFIAS: los archivos estan en la carpeta css/. */
 @font-face {
-    font-family: 'owltail';
-    src: url('owltailbrush-regular-webfont.woff2') format('woff2'),
-         url('owltailbrush-regular-webfont.woff') format('woff');
+    font-family: 'Cartulina';
+    src: url('NewFont-Regular.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 } 
+@font-face {
+    font-family: 'Satoshi';
+    src: url("./Satoshi-Medium.woff2") format('woff2');
+    font-weight: 500;
+    font-style: normal;
+}
 
+/* VARIABLES GLOBALES: cambiar aqui afecta gran parte del sitio. */
 :root {
+    /* Color amarillo principal de titulos, acentos y algunos textos. */
     --text-color: rgb(255, 251, 0);
-    --bg-color:hwb(0 22% 78% / 0.939);
+    --bg-color:hwb(0 15% 75% / 0.939);
     --accent-color: rgb(255, 251, 0);
-    --title-font: "owltail", sans-serif;
-    --text-font: "parabolica", sans-serif;
+    /* Tipografia de rotulo para titulos grandes. */
+    --title-font: "Cartulina";
+    /* Tipografia de lectura para textos pequenos. */
+    --text-font: "Satoshi";
+    /* Sombra roja usada en titulos tipo plumon. */
     --text-shadow-color: rgb(255, 0, 0);
+    /* Fondo rosa de la pagina interna. */
+    --docs-pink: #ff2bd6;
+    /* Altura aproximada reservada para la barra superior fija. */
+    --header-offset: 5rem;
 }
 
 * {
@@ -30,22 +46,1203 @@ html {
     scroll-behavior: smooth;
 }
 body {
-    font-family: var(--text-font);
+    font-family: "Satoshi", sans-serif;
+    font-weight: 500;
     color: var(--text-color);
     font-size: 1.4rem;
     background-color: #000;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
+}
+
+
+
+/* FOOTER DE PORTADA: variante amarilla sobre la imagen principal. */
+.hero-body .site-footer {
+    width: min(1200px, 100%);
+    margin-top: clamp(6rem, 18vh, 10rem);
+    padding: 1rem clamp(1rem, 4vw, 3.5rem);
+    color: rgba(255, 251, 0, 0.9);
+    font-family: var(--text-font), sans-serif;
+    font-size: clamp(0.78rem, 1.4vw, 0.95rem);
+    font-weight: 500;
+    line-height: 1.35;
+    text-align: left;
+    letter-spacing: 0.02em;
+    text-shadow: 0 0.12rem 0.35rem rgba(20, 0, 15, 0.7);
+}
+
+/* PAGINA INTERNA: cuerpo general de docs/index.html. */
+.docs-page {
+    background: var(--docs-pink);
+    background-color: var(--docs-pink);
+    color: #ffffff;
+    display: grid;
+}
+
+.docs-page a {
+    color: #ffffff;
+}
+
+.docs-main {
+    width: min(920px, calc(100% - 2rem));
+    margin: 0 auto;
+    /* Espacio para que el contenido no choque con la barra superior fija. */
+    padding: calc(1rem + var(--header-offset)) 1rem 1rem;
+    background-color: var(--docs-pink);
+}
+
+.docs-main h1 {
+    font-family: var(--title-font), sans-serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    line-height: 0.95;
+    color: var(--text-color);
+    text-shadow: none;
+    margin: 0 0 1rem;
+}
+
+.docs-main p {
+    max-width: 60ch;
+    line-height: 1.6;
+    color: #ffffff;
+}
+
+/* SECCION ACERCA: pantalla de entrada con imagen de fondo y texto. */
+#acerca.is-active {
+    /* CAMBIAR ESPACIOS: controla que tan abajo empieza el carrusel y cuanto aire hay antes de la conclusion. */
+    --about-carousel-start: clamp(14rem, 42vh, 25rem);
+    --about-conclusion-gap: clamp(9.5rem, 21vh, 14rem);
+    position: fixed;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100dvh;
+    margin: 0;
+    border-top: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding-top: clamp(8rem, 18vh, 12rem);
+    padding-inline: clamp(1rem, 4vw, 3.5rem);
+    background: var(--docs-pink);
+    background-color: var(--docs-pink);
+    isolation: isolate;
+    z-index: 1;
+}
+
+#acerca.is-active::-webkit-scrollbar {
+    display: none;
+}
+
+#acerca.is-active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: calc(100dvh + 2px);
+    background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.58) 34%, rgba(0, 0, 0, 0.26) 100%),
+        /* CAMBIAR FONDO ACERCA: reemplaza esta imagen por otra de ims/. */
+        url("../ims/acerca_proyecto.jpg") center center / cover no-repeat;
+    pointer-events: none;
+}
+
+#acerca.is-active::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: calc(100dvh + 2px);
+    background: linear-gradient(180deg, rgba(20, 0, 15, 0.18) 0%, rgba(20, 0, 15, 0.28) 100%);
+    pointer-events: none;
+}
+
+#acerca.is-active > * {
+    position: relative;
+    z-index: 1;
+}
+
+.about-hero {
+    /* Mismo contenedor visual que la seccion "Crea tu cartel". */
+    position: relative;
+    z-index: 1;
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(1rem, 2.8vw, 2.4rem);
+    align-items: start;
+    padding-inline: clamp(0.5rem, 1vw, 1rem);
+}
+
+/* TITULO "ACERCA DEL PROYECTO": estilo amarillo/plumon. */
+.about-title {
+    grid-column: 1;
+    align-self: start;
+    justify-self: start;
+    width: min(100%, 24rem);
+    margin: clamp(5rem, 14vh, 8rem) 0 0;
+    color: var(--text-color);
+    font-family: var(--title-font), sans-serif;
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 400;
+    line-height: 0.82;
+    text-transform: uppercase;
+    transform: rotate(-4deg);
+    text-shadow: 0.08em 0.08em 0 rgba(255, 0, 0, 0.72);
+}
+
+/* Rayas decorativas debajo del titulo. */
+.about-title::after,
+.about-title::before {
+    content: "";
+    display: block;
+    width: 84%;
+    height: 0.16rem;
+    margin-top: 0.18rem;
+    background: currentColor;
+    transform: skewX(-12deg);
+}
+
+.about-title::before {
+    width: 62%;
+    margin-top: 0.36rem;
+    margin-left: 16%;
+}
+
+/* Texto introductorio de la derecha en la seccion Acerca. */
+#acerca .about-copy {
+    grid-column: 2;
+    width: min(100%, 42rem);
+    justify-self: center;
+    align-self: start;
+    margin-top: clamp(8rem, 28vh, 18rem);
+    text-align: left;
+}
+
+
+
+#acerca .about-copy p {
+    max-width: none;
+    margin: 0;
+    font-size: clamp(1rem, 1.25vw, 1.12rem);
+    line-height: 1.6;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+#acerca .about-copy p + p {
+    margin-top: 1.5rem;
+}
+
+.about-exploracion {
+    /* Bloque completo que aparece despues de la pantalla inicial de Acerca. */
+    grid-column: 1 / -1;
+    width: min(1120px, calc(100% + 1rem));
+    justify-self: center;
+    margin-top: var(--about-carousel-start);
+    padding-bottom: var(--about-conclusion-gap);
+    opacity: 0;
+    transform: translateY(2.2rem);
+    transition: opacity 520ms ease, transform 520ms ease;
+}
+
+.about-exploracion.is-visible {
+    /* Clase agregada por JavaScript cuando el bloque entra en pantalla. */
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.about-subtitle {
+    /* CAMBIAR: estilo del subtitulo "Exploracion de campo". */
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
+    padding-bottom: 1.05rem;
+    color: #ffffff;
+    font-family: var(--title-font), sans-serif;
+    font-size: clamp(1.6rem, 4.5vw, 3.6rem);
+    font-weight: 400;
+    line-height: 0.92;
+    text-transform: uppercase;
+    text-shadow: 0.06em 0.06em 0 rgba(20, 0, 15, 0.45);
+}
+
+.about-subtitle::before,
+.about-subtitle::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    height: 0.18rem;
+    background: #ffffff;
+    transform: translateX(-50%) skewX(-12deg);
+}
+
+.about-subtitle::before {
+    bottom: 0.48rem;
+    width: min(82%, 15rem);
+}
+
+.about-subtitle::after {
+    bottom: 0.12rem;
+    width: min(62%, 11rem);
+}
+
+.about-carousel {
+    /* CARRUSEL: cambia aqui el ancho general y espacio entre subtitulo y fotos. */
+    --about-slide-width: min(74vw, 48rem);
+    position: relative;
+    margin-top: clamp(3.75rem, 9vh, 5.75rem);
+    overflow: visible;
+    padding-block: 0;
+}
+
+.about-carousel-track {
+    /* Altura reservada para las fotos del carrusel. */
+    position: relative;
+    width: 100%;
+    height: clamp(22rem, 54vh, 36rem);
+    padding: 0;
+}
+
+.about-slide {
+    /* Cada foto del carrusel es creada por JavaScript y recibe esta clase. */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    width: var(--about-slide-width);
+    height: min(58vh, 36rem);
+    margin: 0;
+    overflow: visible;
+    background: transparent;
+    box-shadow: none;
+    place-items: center;
+    opacity: 0;
+    filter: none;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.45);
+    transition: left 320ms ease, transform 320ms ease, opacity 320ms ease, filter 320ms ease, box-shadow 320ms ease;
+}
+
+.about-slide.is-active {
+    /* Foto principal del carrusel. */
+    left: 50%;
+    z-index: 3;
+    opacity: 1;
+    filter: none;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: none;
+}
+
+.about-slide.is-prev,
+.about-slide.is-next {
+    /* Fotos laterales del carrusel. */
+    z-index: 2;
+    opacity: 0.68;
+    pointer-events: auto;
+    cursor: pointer;
+    transform: translate(-50%, -50%) scale(0.54);
+}
+
+.about-slide.is-prev {
+    left: 11%;
+}
+
+.about-slide.is-next {
+    left: 89%;
+}
+
+.about-slide img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: center;
+    box-shadow: 0 1.1rem 2.2rem rgba(20, 0, 15, 0.34);
+    transition: box-shadow 320ms ease;
+}
+
+.about-slide.is-active img {
+    box-shadow: 0 1.35rem 2.6rem rgba(20, 0, 15, 0.42);
+}
+
+.about-slide-caption {
+    /* Subtitulo tipo pelicula: solo se muestra dentro de la imagen central activa. */
+    position: absolute;
+    bottom: clamp(0.8rem, 2vh, 1.35rem);
+    left: 50%;
+    width: min(94%, 50rem);
+    margin: 0;
+    padding: 0.18rem 0.45rem;
+    color: var(--text-color);
+    font-family: var(--text-font), sans-serif;
+    font-size: clamp(0.78rem, 1.08vw, 0.94rem);
+    font-weight: 500;
+    line-height: 1.35;
+    text-align: center;
+    text-wrap: balance;
+    letter-spacing: 0.01em;
+    text-shadow: 0 0.12rem 0.3rem rgba(20, 0, 15, 0.9);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(0.35rem);
+    transition: opacity 240ms ease, transform 240ms ease;
+}
+
+.about-slide.is-active .about-slide-caption {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.about-statement {
+    /* CONCLUSION: bloque de tres parrafos despues del carrusel. */
+    width: min(100%, 64rem);
+    margin: var(--about-conclusion-gap) auto 0;
+    color: #ffffff;
+    font-family: var(--title-font), sans-serif;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.about-statement p {
+    max-width: none;
+    margin: 0 auto;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: clamp(1rem, 2vw, 1.65rem);
+    font-weight: 400;
+    line-height: 1.25;
+    text-align: center;
+    text-wrap: balance;
+}
+
+.about-statement p + p {
+    margin-top: clamp(1.35rem, 3vh, 2.1rem);
+}
+
+@media screen and (max-width: 760px) {
+    /* AJUSTES MOVIL: se activan en pantallas pequenas. */
+    .about-carousel {
+        --about-slide-width: min(88vw, 28rem);
+    }
+
+    .about-carousel-track {
+        height: clamp(17rem, 46vh, 25rem);
+    }
+
+    #acerca.is-active {
+        --about-carousel-start: clamp(12rem, 38vh, 20rem);
+        --about-conclusion-gap: clamp(7rem, 18vh, 9rem);
+        height: 100dvh;
+        overflow-y: auto;
+        padding-top: clamp(6rem, 16vh, 8rem);
+    }
+
+    .about-hero {
+        grid-template-columns: 1fr;
+    }
+
+    #acerca .about-copy {
+        grid-column: 1;
+        justify-self: start;
+        width: 100%;
+        margin-top: clamp(8rem, 26vh, 14rem);
+    }
+
+    .about-title {
+        grid-column: 1;
+        justify-self: start;
+        width: min(100%, 18rem);
+        margin: clamp(4.5rem, 14vh, 6.5rem) 0 0;
+        font-size: clamp(2.4rem, 14vw, 4.4rem);
+    }
+
+    .about-exploracion {
+        margin-top: var(--about-carousel-start);
+        padding-bottom: var(--about-conclusion-gap);
+        width: calc(100% + 2rem);
+        margin-inline: -1rem;
+    }
+
+    .about-slide {
+        height: min(46vh, 24rem);
+    }
+
+    .about-slide-caption {
+        width: min(92%, 26rem);
+        font-size: clamp(0.72rem, 2.8vw, 0.84rem);
+        line-height: 1.28;
+    }
+
+    .about-slide.is-prev {
+        left: 4%;
+    }
+
+    .about-slide.is-next {
+        left: 96%;
+    }
+
+    .about-slide.is-prev,
+    .about-slide.is-next {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(0.42);
+    }
+
+    .about-statement {
+        width: min(100%, 34rem);
+        margin-top: var(--about-conclusion-gap);
+    }
+
+    .about-statement p {
+        font-size: clamp(0.95rem, 4.8vw, 1.35rem);
+        line-height: 1.2;
+    }
+
+    .about-statement p + p {
+        margin-top: clamp(1.15rem, 3vh, 1.65rem);
+    }
+
+    /* Menos espacio reservado para la barra superior en pantallas pequenas. */
+    .docs-main {
+        padding-top: calc(1rem + 4rem);
+    }
+}
+
+.docs-section {
+    /* Todas las secciones internas empiezan ocultas. */
+    display: none;
+}
+
+.docs-section.is-active {
+    /* JavaScript agrega .is-active a la seccion seleccionada en el menu. */
+    display: block;
+}
+
+.docs-main section {
+    padding: 1rem 0 1.25rem;
+    border-top: 1px solid rgba(20, 0, 15, 0.2);
+}
+
+.docs-main section + section {
+    margin-top: 1rem;
+}
+
+#cartel.is-active {
+    /* SECCION CARTEL: fondo, scroll y espacio general de la herramienta. */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    margin: 0;
+    height: 100dvh;
+    padding: clamp(1rem, 2vw, 2rem) clamp(1rem, 4vw, 3.5rem) clamp(4.25rem, 6vw, 4.75rem);
+    border-top: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+    display: block;
+    background-color: #14000f;
+    background-image:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.58) 34%, rgba(0, 0, 0, 0.26) 100%),
+        /* CAMBIAR FONDO CARTEL: reemplaza esta imagen por otra de ims/. */
+        url("../ims/crea_cartel.jpg");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: local;
+    isolation: isolate;
+}
+
+#cartel.is-active::-webkit-scrollbar {
+    display: none;
+}
+
+#cartel.is-active::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(20, 0, 15, 0.18) 0%, rgba(20, 0, 15, 0.28) 100%);
+    pointer-events: none;
+}
+
+.cartel-stage {
+    /* Contenedor principal de la seccion Cartel. Replica el ancho/margen de Acerca. */
+    position: relative;
+    z-index: 1;
+    width: min(1200px, 100%);
+    margin: 0 auto;
+    height: 100%;
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(1rem, 2.8vw, 2.4rem);
+    align-items: center;
+    padding-inline: clamp(0.5rem, 1vw, 1rem);
+}
+
+.cartel-aside {
+    /* Columna izquierda: titulo, instrucciones y controles. */
+    max-width: 24rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: clamp(0.5rem, 5vw, 3rem);
+    padding-bottom: 4.5rem;
+}
+
+.cartel-title {
+    /* CAMBIAR: estilo del titulo grande de Crea tu cartel. */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: fit-content;
+    gap: 0.1em;
+    margin: 0;
+    font-family: var(--title-font), sans-serif;
+    font-size: clamp(2.6rem, 6vw, 5.8rem);
+    line-height: 0.82;
+    letter-spacing: 0.02em;
+    color: var(--text-color);
+    text-transform: uppercase;
+    transform: rotate(-4deg);
+    text-shadow: 0.08em 0.08em 0 rgba(20, 0, 15, 0.42);
+}
+
+.cartel-title span {
+    width: fit-content;
+}
+
+.cartel-title span:first-child {
+    font-size: 0.7em;
+}
+
+.cartel-title span:last-child {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+}
+
+.cartel-title-ornaments {
+    display: flex;
+    flex-direction: column;
+    gap: 0.06rem;
+    margin-top: -0.05rem;
+    width: min(14rem, 100%);
+    pointer-events: none;
+}
+
+.cartel-title-ornament {
+    width: 100%;
+    height: auto;
+}
+
+.cartel-title-ornament--top {
+    transform: translateX(0.1rem) rotate(-2deg);
+}
+
+.cartel-title-ornament--bottom {
+    transform: translateX(0.2rem) rotate(-2deg);
+}
+
+.cartel-guides {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    margin-top: 0.2rem;
+}
+
+.cartel-guide {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    width: fit-content;
+    max-width: 18rem;
+}
+
+.cartel-guide p {
+    margin: 0;
+    font-family: var(--title-font), sans-serif;
+    font-size: clamp(1.15rem, 1.6vw, 1.55rem);
+    line-height: 0.92;
+    color: #ffffff;
+    text-transform: uppercase;
+    transform: rotate(-4deg);
+    text-shadow: 0.06em 0.06em 0 rgba(20, 0, 15, 0.5);
+}
+
+.cartel-guide img {
+    display: block;
+    flex: 0 0 auto;
+}
+
+.cartel-guide--type img {
+    width: clamp(3.6rem, 4.4vw, 4.8rem);
+    margin-top: 0.1rem;
+    transform: translateX(-0.15rem);
+}
+
+.cartel-guide--color {
+    padding-left: 0.8rem;
+}
+
+.cartel-guide--color img {
+    width: clamp(3.6rem, 4.8vw, 5rem);
+    margin-top: 0.25rem;
+    transform: translateX(-0.1rem);
+}
+
+.cartel-note {
+    /* CAMBIAR: texto pequeno de instrucciones. */
+    max-width: 20rem;
+    margin: 0;
+    font-family: var(--text-font), sans-serif;
+    font-size: clamp(1rem, 1.25vw, 1.12rem);
+    font-weight: 500;
+    line-height: 1.6;
+    color: #ffffff;
+    letter-spacing: 0.01em;
+    text-shadow: 0.04em 0.04em 0 rgba(20, 0, 15, 0.5);
+}
+
+.cartel-scale {
+    /* Controles de rango: tamano y variable/peso del texto. */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: fit-content;
+    color: #ffffff;
+    font-family: var(--title-font), sans-serif;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+}
+
+.cartel-scale span {
+    white-space: nowrap;
+}
+
+.cartel-scale input {
+    width: 12rem;
+    accent-color: #6d7cff;
+}
+
+.cartel-swatches {
+    /* Botones de color para elegir cartulina. */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    width: min(100%, 16rem);
+    align-items: center;
+}
+
+.cartel-swatches button {
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0;
+    border: 0.14rem solid rgba(255, 255, 255, 0.76);
+    border-radius: 999px;
+    background: var(--swatch);
+    box-shadow: 0 0 0 0.18rem rgba(20, 0, 15, 0.26);
+    cursor: pointer;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.cartel-swatches button:hover,
+.cartel-swatches button:focus-visible {
+    transform: scale(1.08);
+    outline: none;
+}
+
+.cartel-swatches button.is-active {
+    box-shadow: 0 0 0 0.18rem rgba(255, 251, 0, 0.96), 0 0 0 0.38rem rgba(20, 0, 15, 0.24);
+    transform: scale(1.12);
+}
+
+.cartel-board {
+    /* Cartulina editable. Las variables se actualizan desde JavaScript. */
+    position: relative;
+    min-height: clamp(28rem, 70vh, 44rem);
+    padding: clamp(1rem, 2.2vw, 2rem);
+    --board-color: rgba(255, 255, 255, 0.98);
+    --board-scale: 1.15;
+    --board-weight: 600;
+    background: var(--board-color);
+    box-shadow: 0 1.6rem 3.2rem rgba(20, 0, 15, 0.35);
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.cartel-publish {
+    /* Boton para publicar el cartel en la seccion Protesta. */
+    position: absolute;
+    left: clamp(1rem, 2vw, 2rem);
+    bottom: clamp(1rem, 2vw, 2rem);
+    z-index: 2;
+    border: 0;
+    padding: 0.7rem 1rem;
+    background: rgba(20, 0, 15, 0.76);
+    color: #ffffff;
+    font-family: var(--title-font), sans-serif;
+    font-size: 1.05rem;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 0.8rem 1.8rem rgba(0, 0, 0, 0.2);
+    transition: transform 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.cartel-publish:hover,
+.cartel-publish:focus-visible {
+    background: rgba(255, 251, 0, 0.96);
+    color: #14000f;
+    transform: translateY(-0.12rem);
+    outline: none;
+}
+
+.cartel-publish:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+    transform: none;
+}
+
+.cartel-publish:disabled:hover,
+.cartel-publish:disabled:focus-visible {
+    background: rgba(20, 0, 15, 0.76);
+    color: #ffffff;
+    transform: none;
+}
+
+.protesta-stage {
+    /* Escenario de la seccion Protesta. */
+    position: relative;
+    width: 100%;
+    min-height: 100dvh;
+}
+
+.protesta-intro {
+    max-width: 40rem;
+    margin: 0;
+    color: #ffffff;
+    line-height: 1.35;
+}
+
+.protesta-gallery-wrap {
+    position: absolute;
+    inset: 0;
+}
+
+.protesta-gallery {
+    /* CAMBIAR FONDO PROTESTA: esta imagen tambien se repite en #protesta.is-active. */
+    position: absolute;
+    inset: 0;
+    min-height: 100dvh;
+    overflow: hidden;
+    border: 0;
+    background:
+        linear-gradient(180deg, rgba(20, 0, 15, 0.08) 0%, rgba(20, 0, 15, 0.2) 100%),
+        url("../ims/puesto_metal.jpg") center center / cover no-repeat;
+}
+
+.protesta-empty {
+    margin: 0;
+    position: absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.82);
+    pointer-events: none;
+}
+
+.protesta-post {
+    /* Carteles ya publicados: JavaScript los crea y permite arrastrarlos. */
+    position: absolute;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+}
+
+.protesta-post:active {
+    cursor: grabbing;
+}
+
+.cartel-board.protesta-post {
+    min-height: auto;
+    box-shadow: 0 1.1rem 2rem rgba(20, 0, 15, 0.4);
+}
+
+.protesta-post .cartel-editor {
+    pointer-events: none;
+}
+
+.protesta-reset {
+    /* Boton que borra todos los carteles guardados. */
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 50;
+    border: 0;
+    padding: 0.6rem 0.95rem;
+    font-family: var(--title-font), sans-serif;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: rgba(20, 0, 15, 0.78);
+    color: #ffffff;
+    cursor: pointer;
+    transition: transform 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+#protesta.is-active {
+    /* SECCION PROTESTA: fondo y scroll de la vista completa. */
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border-top: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+    display: block;
+    z-index: 1;
+    background-color: #14000f;
+    background-image:
+        linear-gradient(180deg, rgba(20, 0, 15, 0.08) 0%, rgba(20, 0, 15, 0.2) 100%),
+        /* CAMBIAR FONDO PROTESTA: reemplaza esta imagen por otra de ims/. */
+        url("../ims/puesto_metal.jpg");
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: local;
+}
+
+#protesta.is-active::-webkit-scrollbar {
+    display: none;
+}
+
+#protesta.is-active h1,
+#protesta.is-active .protesta-intro {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.protesta-reset:hover,
+.protesta-reset:focus-visible {
+    background: rgba(255, 251, 0, 0.96);
+    color: #14000f;
+    transform: translateY(-0.08rem);
+    outline: none;
+}
+
+.cartel-editor {
+    /* Texto editable dentro de la cartulina. */
+    width: 100%;
+    min-height: 100%;
+    display: grid;
+    place-items: center;
+    padding: clamp(1rem, 3vw, 3rem);
+    color: #2a2a2a;
+    font-family: var(--title-font), sans-serif;
+    font-variation-settings: "wght" var(--board-weight);
+    font-weight: var(--board-weight);
+    font-size: calc(clamp(2rem, 4vw, 4.2rem) * var(--board-scale, 1.15));
+    line-height: 0.92;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    outline: none;
+    white-space: pre-wrap;
+    word-break: break-word;
+    caret-color: #ff2bd6;
+}
+
+.cartel-editor:empty::before {
+    content: attr(data-placeholder);
+    color: rgba(42, 42, 42, 0.38);
+}
+
+.cartel-editor:focus {
+    box-shadow: inset 0 0 0 0.14rem rgba(109, 124, 255, 0.28);
+}
+
+.cartel-scale--font {
+    font-size: 1rem;
+}
+
+@media screen and (max-width: 900px) {
+    #cartel.is-active {
+        padding: 0.9rem 1rem 1.2rem;
+    }
+
+    .cartel-stage {
+        grid-template-columns: 1fr;
+        height: 100%;
+        align-items: start;
+        gap: 1rem;
+    }
+
+    .cartel-aside {
+        max-width: 100%;
+        padding-top: 0;
+    }
+
+    .cartel-scale {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.55rem;
+    }
+
+    .cartel-scale input {
+        width: 100%;
+    }
+
+    .cartel-swatches {
+        flex-direction: row;
+    }
+
+    .cartel-board {
+        min-height: 22rem;
+    }
+
+    .cartel-publish {
+        position: static;
+        justify-self: start;
+    }
+
+    .protesta-gallery {
+        min-height: 100dvh;
+    }
+
+    .protesta-reset {
+        left: 0.8rem;
+        bottom: 0.8rem;
+    }
+}
+
+.docs-topbar {
+    /* Barra superior de docs/index.html. */
+    align-items: flex-start;
+}
+
+.menu {
+    /* Menu hamburguesa. Se usa en portada y pagina interna. */
+    position: relative;
+    pointer-events: auto;
+}
+
+.menu summary {
+    /* Icono de hamburguesa: las tres lineas son los <span>. */
+    list-style: none;
+    cursor: pointer;
+    width: 2.35rem;
+    height: 2.35rem;
+    display: grid;
+    align-content: center;
+    gap: 0.22rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    outline: none;
+    transition: transform 160ms ease, opacity 160ms ease, background-color 160ms ease;
+}
+
+.menu summary::-webkit-details-marker {
+    display: none;
+}
+
+.menu summary span {
+    display: block;
+    width: 100%;
+    height: 0.16rem;
+    border-radius: 0;
+    background: #ffffff;
+    transition: transform 160ms ease, background-color 160ms ease, width 160ms ease;
+}
+
+.menu:hover summary,
+.menu:focus-within summary {
+    transform: scale(1.05);
+}
+
+.menu summary:focus,
+.menu summary:focus-visible {
+    outline: none;
+}
+
+.menu:hover summary span,
+.menu:focus-within summary span {
+    background: var(--text-color);
+}
+
+.menu[open] summary span:nth-child(1) {
+    transform: translateY(0.53rem) rotate(45deg);
+}
+
+.menu[open] summary span:nth-child(2) {
+    width: 0;
+}
+
+.menu[open] summary span:nth-child(3) {
+    transform: translateY(-0.53rem) rotate(-45deg);
+}
+
+.menu-panel {
+    /* Panel desplegable del menu. */
+    position: absolute;
+    top: 3.4rem;
+    left: 0;
+    min-width: 12rem;
+    padding: 0.4rem;
+    display: none;
+    flex-direction: column;
+    gap: 0.2rem;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
+.menu[open] .menu-panel {
+    display: flex;
+}
+
+.menu-panel button,
+.menu-panel a {
+    /* Estilo comun para links de portada y botones de docs. */
+    display: block;
+    border: 0;
+    padding: 0.3rem 0.45rem;
+    background: rgba(20, 0, 15, 0.24);
+    font-family: var(--title-font), sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.1;
+    color: #ffffff;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 0;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    transition: transform 160ms ease, background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.menu-panel button:hover,
+.menu-panel button:focus-visible,
+.menu-panel a:hover,
+.menu-panel a:focus-visible {
+    background: rgba(255, 251, 0, 0.9);
+    color: #14000f;
+    transform: translateX(0.35rem) skewX(-6deg);
+    outline: none;
+}
+
+.menu-panel button.is-active,
+.menu-panel a.is-active {
+    background: #ffffff;
+    color: #14000f;
+    box-shadow: 0 0 0 1px rgba(255, 251, 0, 0.65);
+}
+
+.docs-section.is-active h1:not(.about-title) {
+    text-shadow: 0.08em 0.08em 0 rgba(255, 251, 0, 0.25);
+}
+
+.topbar {
+    /* Barra superior fija con menu a la izquierda y logo a la derecha. */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.85rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 1200;
+    pointer-events: none;
+}
+
+.topbar a {
+    pointer-events: auto;
+}
+
+.home-link {
+    color: var(--text-color);
+    text-decoration: none;
+    font-family: var(--title-font), sans-serif;
+    font-size: min(3.8vw, 1.18rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.home-link--menu {
+    width: 2.35rem;
+    height: 2.35rem;
+    display: grid;
+    align-content: center;
+    gap: 0.22rem;
+    opacity: 1;
+    transition: transform 160ms ease;
+}
+
+.home-link--menu:hover,
+.home-link--menu:focus-visible {
+    transform: scale(1.05);
+    outline: none;
+}
+
+.home-link--menu span {
+    display: block;
+    width: 100%;
+    height: 0.16rem;
+    background: #ffffff;
+    transition: background-color 160ms ease;
+}
+
+.home-link--menu:hover span,
+.home-link--menu:focus-visible span {
+    background: var(--text-color);
+}
+
+.brand-logo {
+    /* Contenedor del logo: cambia el ancho aqui si quieres hacerlo mas grande/chico. */
+    text-decoration: none;
+    display: block;
+    width: clamp(5.75rem, 14vw, 11rem);
+    line-height: 0;
+}
+
+.brand-logo img {
+    /* Imagen del logo y sombra sutil. */
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 0.28rem 0.45rem rgba(20, 0, 15, 0.28));
 }
 
 header {
     width: 100%;
     padding: 1em;
     text-align: left;
-}
-
-main {
-
 }
 
 nav {
@@ -65,24 +1262,71 @@ nav a {
 }
 
 @media screen and (min-width: 600px) {
+    /* Layout de la portada en desktop. */
     body {
         display: flex;
     }
+
+    .hero-body {
+        flex-wrap: wrap;
+    }
+
     header {
         width: 50%;
     }
     main {
         width: 50%;
     }
+
+    .hero-body .site-footer {
+        flex: 0 0 100%;
+    }
     
 }
 
 body.hero-body {
-    background-image: url("../ims/primerpuesto.png");
-    background-size: cover;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-position: center;
+    background: #000;
+    position: relative;
+}
+
+.hero-video {
+    /* CAMBIAR VIDEO PORTADA: el archivo esta definido en index.html. */
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: -1;
+}
+
+.hero-sound-toggle {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1100;
+    border: 0;
+    width: 3rem;
+    height: 3rem;
+    padding: 0.55rem;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(20, 0, 15, 0.62);
+    cursor: pointer;
+}
+
+.hero-sound-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.hero-sound-toggle:hover,
+.hero-sound-toggle:focus-visible {
+    background: rgba(255, 251, 0, 0.92);
+    outline: none;
 }
 main {
     width: 100%;
@@ -93,6 +1337,7 @@ main {
 }
 
 .hero-body main {
+    /* Centra la composicion de la portada. */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -106,8 +1351,8 @@ a {
     color: var(--accent-color)
 }
 h1, h2, h3, h4, h5, h6{
-    font-family: var(--title-font), sans-serif;
-    font-variation-settings: "wdth" 50, "slnt" 0;
+    /* Estilo base para titulos generales. Algunas secciones lo sobreescriben. */
+    font-family: "Cartulina";
     font-size: 6em;
     font-weight: 100;
     text-shadow: .035em .035em 0px var( --text-shadow-color);
@@ -125,63 +1370,19 @@ h1 small {
     display: block;
 }
 .hero {
+    /* Seccion vacia de portada: la imagen principal viene del fondo del body. */
     --accent-color: black;
-    padding: 1em;
+    padding: 4.5rem 1em 1em;
 }
 .hero p {
     font-size: min(10vw, 3.5em);
-    font-variation-settings: "wdth" 80, "slnt" 30;
-    line-height: 0.7;
-    font-family: var(--title-font), sans-serif;
-    line-height: 1.1em;
-    margin: 0;
-    margin-top: 0em;
-    text-shadow: .1em .1em 0px var(--text-shadow-color);
-}
-.hero p::first-line {
-    font-size: .8em;
-}
-.hero footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1.4em;
-    text-align: center;
-    background-color:rgb(255, 251, 0);
-    font-family: var(--title-font), sans-serif;
-    font-size: 2em;
-    font-variation-settings: "wdth" 80, "slnt" 30;
-    line-height: 1.2em;
-    display: block;
-    padding: .1em 0;
-}
-h2 {
 
-    font-size: 18em; 
-    font-variation-settings: "wdth" 80, "slnt" 30;
-    line-height: 0.7
-}
-
-h3 {font-size: min(8vw, 4em);font-variation-settings: "wdth" 80, "slnt" -26;line-height: 1em}
-
-h4 {
-
-    font-size: 5em; 
-    font-variation-settings: "wdth" 80, "slnt" -26;
-    line-height: 0.01
-}
-
-h5 {
-
-    font-size: 7em; 
-    font-variation-settings: "wdth" 80, "slnt" -26;
+    font-size: 7em;
     line-height: 0.01
 }
 
 h6 {
 
-    font-size: 13em; 
-    font-variation-settings: "wdth" 80, "slnt" -26;
+    font-size: 13em;
     line-height: 0.01
 }
