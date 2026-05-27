@@ -9,7 +9,7 @@
 /* TIPOGRAFIAS: los archivos estan en la carpeta css/. */
 @font-face {
     font-family: 'Cartulina';
-    src: url('NewFont-Regular.woff2') format('woff2');
+    src: url('./cartulina.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
 } 
@@ -545,7 +545,7 @@ body {
     width: 100%;
     margin: 0;
     height: 100dvh;
-    padding: clamp(1rem, 2vw, 2rem) clamp(1rem, 4vw, 3.5rem) clamp(4.25rem, 6vw, 4.75rem);
+    padding: clamp(1rem, 2vw, 2rem) clamp(1rem, 4vw, 3.5rem) clamp(6.5rem, 7vw, 7.5rem);
     border-top: 0;
     overflow-x: hidden;
     overflow-y: auto;
@@ -583,6 +583,7 @@ body {
     margin: 0 auto;
     height: 100%;
     display: grid;
+    margin-bottom: clamp(6.5rem, 7vw, 7.5rem);
     grid-template-columns: minmax(18rem, 0.8fr) minmax(0, 1.2fr);
     gap: clamp(1rem, 2.8vw, 2.4rem);
     align-items: center;
@@ -784,10 +785,10 @@ body {
 
 .cartel-publish {
     /* Boton para publicar el cartel en la seccion Protesta. */
-    position: absolute;
+    position: fixed;
     left: clamp(1rem, 2vw, 2rem);
     bottom: clamp(1rem, 2vw, 2rem);
-    z-index: 2;
+    z-index: 1300;
     border: 0;
     padding: 0.7rem 1rem;
     background: rgba(20, 0, 15, 0.76);
@@ -1328,6 +1329,10 @@ body.hero-body {
     background: rgba(255, 251, 0, 0.92);
     outline: none;
 }
+.hero-sound-toggle:hover img {
+    filter: invert(1);
+}
+
 main {
     width: 100%;
     max-width: 960px;
