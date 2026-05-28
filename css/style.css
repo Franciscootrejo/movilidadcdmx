@@ -20,6 +20,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Satoshi';
+    src: url("./Satoshi-Bold.woff2") format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
 /* VARIABLES GLOBALES: cambiar aqui afecta gran parte del sitio. */
 :root {
     /* Color amarillo principal de titulos, acentos y algunos textos. */
@@ -71,6 +78,24 @@ body {
     text-align: left;
     letter-spacing: 0.02em;
     text-shadow: 0 0.12rem 0.35rem rgba(20, 0, 15, 0.7);
+}
+
+/* FOOTER EN LA PAGINA INTERNA: queda visible al final de Acerca del proyecto. */
+.docs-page .site-footer {
+    margin-top: clamp(3rem, 8vh, 5rem);
+    color: rgba(255, 255, 255, 0.82);
+    font-family: var(--text-font), sans-serif;
+    font-size: clamp(0.72rem, 1.2vw, 0.9rem);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: 0.02em;
+    position: fixed;
+    bottom: 0;
+    z-index: 99;
+    text-align: center;
+    background: black;
+    right: 0;
+    padding: .5em 1em;
 }
 
 /* PAGINA INTERNA: cuerpo general de docs/index.html. */
@@ -233,6 +258,10 @@ body {
     line-height: 1.6;
     font-weight: 500;
     letter-spacing: 0.01em;
+}
+
+#acerca .about-copy strong {
+    font-weight: 700;
 }
 
 #acerca .about-copy p + p {
@@ -985,7 +1014,7 @@ body {
 }
 
 .cartel-scale--font {
-    font-size: 1rem;
+    font-size: 1.1rem;
 }
 
 @media screen and (max-width: 900px) {
@@ -1231,13 +1260,16 @@ body {
     width: clamp(5.75rem, 14vw, 11rem);
     line-height: 0;
 }
-
+.brand-logo:hover img {
+    filter: drop-shadow(-0.28em 0.28rem 0rem rgb(20, 0, 15));
+}
 .brand-logo img {
     /* Imagen del logo y sombra sutil. */
     display: block;
     width: 100%;
     height: auto;
-    filter: drop-shadow(0 0.28rem 0.45rem rgba(20, 0, 15, 0.28));
+    filter: drop-shadow(0em 0rem 0rem rgb(20, 0, 15));
+    transition: all .25s ease;
 }
 
 header {
@@ -1303,7 +1335,7 @@ body.hero-body {
 
 .hero-sound-toggle {
     position: fixed;
-    right: 1rem;
+    left: 1rem;
     bottom: 1rem;
     z-index: 1100;
     border: 0;
