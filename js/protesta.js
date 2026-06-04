@@ -115,7 +115,7 @@ function updateCartelModeControl() {
 
 	if (isFontMode) {
 		cartelModeScale.min = '100';
-		cartelModeScale.max = '200';
+		cartelModeScale.max = '500';
 		cartelModeScale.step = '1';
 		cartelModeScale.value = String(cartelModeValues.font);
 		cartelOverlayText.style.display = 'none';
@@ -241,8 +241,6 @@ function posterToData(poster) {
 		text: editor ? editor.textContent : '',
 		boardColor: poster.style.getPropertyValue('--board-color'),
 		boardScale: poster.style.getPropertyValue('--board-scale'),
-		boardWeight: poster.style.getPropertyValue('--board-weight'),
-		boardStretch: poster.style.getPropertyValue('--board-stretch'),
 		boardWidth: poster.style.getPropertyValue('--board-width'),
 		overlayText: overlay ? overlay.textContent : '',
 		overlayOffset: poster.style.getPropertyValue('--layers-offset'),
@@ -282,8 +280,6 @@ function createPosterFromData(data) {
 	poster.style.setProperty('--board-color', data.boardColor || '#d8ff00');
 	poster.style.setProperty('--overlay-color', getHighlightColorForBoardColor(data.boardColor || '#d8ff00'));
 	poster.style.setProperty('--board-scale', data.boardScale || '1.15');
-	poster.style.setProperty('--board-weight', data.boardWeight || '600');
-	poster.style.setProperty('--board-stretch', data.boardStretch || '100%');
 	poster.style.setProperty('--board-width', data.boardWidth || '100');
 	poster.style.setProperty('--layers-offset', data.overlayOffset || '0px');
 	poster.style.left = data.left || '0px';
@@ -484,7 +480,7 @@ if (cartelModeScale && cartelBoard) {
 		cartelModeValues[cartelMode] = Number(value);
 
 		if (cartelMode === 'font') {
-			cartelBoard.style.setProperty('--board-weight', value);
+			cartelBoard.style.setProperty('--board-width', value);
 			if (cartelOverlayText) {
 				cartelOverlayText.style.display = 'none';
 			}

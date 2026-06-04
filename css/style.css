@@ -7,9 +7,10 @@ style.css
 @font-face {
     font-family: 'Cartulina';
     src: url('./cartulina-Regular.woff2') format('woff2');
-    font-weight: 100 900;
+    font-weight: normal;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'Capas';
     src: url('./cartulinacapas-cartulina.woff2');
@@ -35,7 +36,7 @@ style.css
 :root {
     /* Color amarillo principal de titulos, acentos y algunos textos. */
     --text-color: rgb(255, 251, 0);
-    --bg-color:hwb(0 15% 75% / 0.939);
+    --bg-color: hwb(0 15% 75% / 0.939);
     --accent-color: rgb(255, 251, 0);
     /* Tipografia de rotulo para titulos grandes. */
     --title-font: "Cartulina";
@@ -52,10 +53,12 @@ style.css
 * {
     box-sizing: border-box;
 }
+
 html {
     font-size: 100%;
     scroll-behavior: smooth;
 }
+
 body {
     font-family: "Satoshi", sans-serif;
     font-weight: 500;
@@ -193,7 +196,7 @@ body {
     pointer-events: none;
 }
 
-#acerca.is-active > * {
+#acerca.is-active>* {
     position: relative;
     z-index: 1;
 }
@@ -277,7 +280,7 @@ body {
     font-weight: 700;
 }
 
-#acerca .about-copy p + p {
+#acerca .about-copy p+p {
     margin-top: 1.5rem;
 }
 
@@ -446,11 +449,12 @@ body {
     text-wrap: balance;
 }
 
-.about-statement p + p {
+.about-statement p+p {
     margin-top: clamp(1.35rem, 3vh, 2.1rem);
 }
 
 @media screen and (max-width: 760px) {
+
     /* AJUSTES MOVIL: se activan en pantallas pequenas. */
     .about-carousel {
         --about-slide-width: min(88vw, 28rem);
@@ -528,7 +532,7 @@ body {
         line-height: 1.2;
     }
 
-    .about-statement p + p {
+    .about-statement p+p {
         margin-top: clamp(1.15rem, 3vh, 1.65rem);
     }
 
@@ -553,7 +557,7 @@ body {
     border-top: 1px solid rgba(20, 0, 15, 0.2);
 }
 
-.docs-main section + section {
+.docs-main section+section {
     margin-top: 1rem;
 }
 
@@ -862,7 +866,7 @@ body {
     padding: clamp(1rem, 2.2vw, 2rem);
     --board-color: #d8ff00;
     --board-scale: 1.15;
-    --board-weight: 600;
+
     --layers-offset: 0px;
     background: var(--board-color);
     box-shadow: 0 1.6rem 3.2rem rgba(20, 0, 15, 0.35);
@@ -892,9 +896,7 @@ body {
     padding: clamp(1rem, 3vw, 3rem);
     color: var(--overlay-color, #2a2a2a);
     font-family: 'Capas', sans-serif;
-    font-variation-settings: "wght" var(--board-weight), "wdth" var(--board-width, 100);
-    font-stretch: var(--board-stretch, 100%);
-    font-weight: var(--board-weight);
+    font-variation-settings: "wdth" var(--board-width, 100);
     font-size: calc(clamp(2rem, 4vw, 4.2rem) * var(--board-scale, 1.15));
     line-height: 0.92;
     text-align: center;
@@ -1087,9 +1089,7 @@ body {
     padding: clamp(1rem, 3vw, 3rem);
     color: #2a2a2a;
     font-family: var(--title-font), sans-serif;
-    font-variation-settings: "wght" var(--board-weight), "wdth" var(--board-width, 100);
-    font-stretch: var(--board-stretch, 100%);
-    font-weight: var(--board-weight);
+    font-variation-settings: "wdth" var(--board-width, 100);
     font-size: calc(clamp(2rem, 4vw, 4.2rem) * var(--board-scale, 1.15));
     line-height: 0.92;
     text-align: center;
@@ -1354,9 +1354,11 @@ body {
     width: clamp(5.75rem, 14vw, 11rem);
     line-height: 0;
 }
+
 .brand-logo:hover img {
     filter: drop-shadow(-0.28em 0.28rem 0rem rgb(20, 0, 15));
 }
+
 .brand-logo img {
     /* Imagen del logo y sombra sutil. */
     display: block;
@@ -1389,6 +1391,7 @@ nav a {
 }
 
 @media screen and (min-width: 600px) {
+
     /* Layout de la portada en desktop. */
     body {
         display: flex;
@@ -1401,6 +1404,7 @@ nav a {
     header {
         width: 50%;
     }
+
     main {
         width: 50%;
     }
@@ -1410,7 +1414,7 @@ nav a {
         bottom: clamp(1rem, 2vw, 1.5rem);
         flex: 0 0 auto;
     }
-    
+
 }
 
 body.hero-body {
@@ -1457,6 +1461,7 @@ body.hero-body {
     background: rgba(255, 251, 0, 0.92);
     outline: none;
 }
+
 .hero-sound-toggle:hover img {
     filter: invert(1);
 }
@@ -1476,19 +1481,26 @@ main {
     align-items: center;
 }
 
-p, li{
+p,
+li {
     max-width: 65ch;
 }
 
 a {
     color: var(--accent-color)
 }
-h1, h2, h3, h4, h5, h6{
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     /* Estilo base para titulos generales. Algunas secciones lo sobreescriben. */
     font-family: "Cartulina";
     font-size: 6em;
     font-weight: 100;
-    text-shadow: .035em .035em 0px var( --text-shadow-color);
+    text-shadow: .035em .035em 0px var(--text-shadow-color);
 }
 
 h1 {
@@ -1502,11 +1514,13 @@ h1 {
 h1 small {
     display: block;
 }
+
 .hero {
     /* Seccion vacia de portada: la imagen principal viene del fondo del body. */
     --accent-color: black;
     padding: 4.5rem 1em 1em;
 }
+
 .hero p {
     font-size: min(10vw, 3.5em);
 
