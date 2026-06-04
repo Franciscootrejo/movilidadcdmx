@@ -114,8 +114,8 @@ function updateCartelModeControl() {
 	cartelModeLabel.textContent = isFontMode ? 'Condensado' : 'Capas';
 
 	if (isFontMode) {
-		cartelModeScale.min = '75';
-		cartelModeScale.max = '100';
+		cartelModeScale.min = '100';
+		cartelModeScale.max = '200';
 		cartelModeScale.step = '1';
 		cartelModeScale.value = String(cartelModeValues.font);
 		cartelOverlayText.style.display = 'none';
@@ -484,8 +484,7 @@ if (cartelModeScale && cartelBoard) {
 		cartelModeValues[cartelMode] = Number(value);
 
 		if (cartelMode === 'font') {
-			cartelBoard.style.setProperty('--board-stretch', `${value}%`);
-			cartelBoard.style.setProperty('--board-width', value);
+			cartelBoard.style.setProperty('--board-weight', value);
 			if (cartelOverlayText) {
 				cartelOverlayText.style.display = 'none';
 			}
