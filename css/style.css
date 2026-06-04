@@ -6,8 +6,8 @@ style.css
 /* TIPOGRAFIAS: los archivos estan en la carpeta css/. */
 @font-face {
     font-family: 'Cartulina';
-    src: url('./cartulinaVF.ttf') format('truetype');
-    font-weight: normal;
+    src: url('./cartulinaVF.woff2') format('woff2');
+    font-weight: 100 500;
     font-style: normal;
 }
 
@@ -895,8 +895,8 @@ body {
     min-height: 100%;
     padding: clamp(1rem, 3vw, 3rem);
     color: var(--overlay-color, #2a2a2a);
-    font-family: 'Capas', sans-serif;
-    font-variation-settings: "wdth" var(--board-width, 100);
+    font-family: 'Cartulina', sans-serif;
+    font-variation-settings: 'wght' var(--board-weight, 100);
     font-size: calc(clamp(2rem, 4vw, 4.2rem) * var(--board-scale, 1.15));
     line-height: 0.92;
     text-align: center;
@@ -1088,8 +1088,8 @@ body {
     place-items: center;
     padding: clamp(1rem, 3vw, 3rem);
     color: #2a2a2a;
-    font-family: var(--title-font), sans-serif;
-    font-variation-settings: "wdth" var(--board-width, 100);
+    font-family: 'Cartulina', sans-serif;
+    font-variation-settings: 'wght' var(--board-weight, 100);
     font-size: calc(clamp(2rem, 4vw, 4.2rem) * var(--board-scale, 1.15));
     line-height: 0.92;
     text-align: center;

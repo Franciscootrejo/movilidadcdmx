@@ -286,7 +286,7 @@ function posterToData(poster) {
     text: editor ? editor.textContent : '',
     boardColor: poster.style.getPropertyValue('--board-color'),
     boardScale: poster.style.getPropertyValue('--board-scale'),
-    boardWidth: poster.style.getPropertyValue('--board-width'),
+    boardWeight: poster.style.getPropertyValue('--board-weight'),
     overlayText: overlay ? overlay.textContent : '',
     overlayOffset: poster.style.getPropertyValue('--layers-offset'),
     cartelMode: poster.dataset.cartelMode || 'font',
@@ -327,7 +327,7 @@ function createPosterFromData(data) {
   poster.style.setProperty('--board-color', data.boardColor || '#d8ff00');
   poster.style.setProperty('--overlay-color', getHighlightColorForBoardColor(data.boardColor || '#d8ff00'));
   poster.style.setProperty('--board-scale', data.boardScale || '1.15');
-  poster.style.setProperty('--board-width', data.boardWidth || '100');
+  poster.style.setProperty('--board-weight', data.boardWeight || '100');
   poster.style.setProperty('--layers-offset', data.overlayOffset || '0px');
   poster.style.left = data.left || '0px';
   poster.style.top = data.top || '0px';
@@ -664,7 +664,7 @@ if (cartelModeScale && cartelBoard) {
     cartelModeValues[cartelMode] = Number(value);
 
     if (cartelMode === 'font') {
-      cartelBoard.style.setProperty('--board-width', value);
+      cartelBoard.style.setProperty('--board-weight', value);
       cartelOverlayText.style.display = 'none';
     } else {
       cartelBoard.style.setProperty('--layers-offset', `${value}px`);
