@@ -13,7 +13,7 @@ const cartelScale = document.querySelector('#cartel-size');
 const cartelModeButtons = document.querySelectorAll('[data-cartel-mode]');
 const cartelModeScale = document.querySelector('#cartel-mode-scale');
 const cartelModeLabel = document.querySelector('.cartel-scale-label');
-const cartelOverlayText = document.querySelector('#cartel .cartel-overlay-text');
+
 const cartelColorButtons = document.querySelectorAll('[data-cartel-color]');
 const cartelPublishButton = document.querySelector('#cartel-publish');
 
@@ -106,7 +106,7 @@ function setCartelBoardHighlightColor(color) {
 }
 
 function updateCartelModeControl() {
-	if (!cartelModeScale || !cartelModeLabel || !cartelOverlayText) {
+	if (!cartelModeScale || !cartelModeLabel) {
 		return;
 	}
 
@@ -118,18 +118,20 @@ function updateCartelModeControl() {
 		cartelModeScale.max = '500';
 		cartelModeScale.step = '1';
 		cartelModeScale.value = String(cartelModeValues.font);
-		cartelOverlayText.style.display = 'none';
 		if (cartelBoard) {
-			cartelBoard.style.setProperty('--layers-offset', '0px');
+			cartelBoard.style.setProperty('--layers-shadow', 'none');
 		}
 		return;
 	}
 
-	cartelModeScale.min = '-2';
-	cartelModeScale.max = '3';
-	cartelModeScale.step = '0.1';
+	cartelModeScale.min = '-30';
+	cartelModeScale.max = '30';
+	cartelModeScale.step = '1';
 	cartelModeScale.value = String(cartelModeValues.layers);
-	cartelOverlayText.style.display = 'grid';
+	if (cartelBoard) {
+		const shadow = buildLayersShadow(cartelModeValues.layers, cartelBoard.style.getPropertyValue('--overlay-color') || '#ff2bd6');
+		cartelBoard.style.setProperty('--layers-shadow', shadow);
+	}
 }
 
 function bringPosterToFront(poster) {
@@ -144,12 +146,12 @@ function canPublishPoster() {
 	return hasText && hasColor;
 }
 
-function syncCartelOverlayText() {
-	if (!cartelEditor || !cartelOverlayText) {
-		return;
+function buildLayersShadow(offset, color) {
+	if (!offset || offset === 0) {
+		return 'none';
 	}
-
-	cartelOverlayText.textContent = cartelEditor.textContent;
+	// Construye una sombra doble: ligera + densa, para simular el efecto de capa.
+	return `${offset}px 0 0 ${color}, ${offset * 2}px 0 0 ${color}88`;
 }
 
 function updatePublishState() {
@@ -175,9 +177,7 @@ function preservePosterLayout(poster) {
 	const sourceRect = cartelBoard.getBoundingClientRect();
 	const sourceBoardStyle = window.getComputedStyle(cartelBoard);
 	const sourceEditor = cartelBoard.querySelector('.cartel-editor');
-	const sourceOverlay = cartelBoard.querySelector('.cartel-overlay-text');
 	const posterEditor = poster.querySelector('.cartel-editor');
-	const posterOverlay = poster.querySelector('.cartel-overlay-text');
 	const posterScale = window.matchMedia('(max-width: 700px)').matches ? 0.52 : 0.42;
 
 	poster.style.width = `${sourceRect.width * posterScale}px`;
@@ -202,24 +202,6 @@ function preservePosterLayout(poster) {
 	if (!Number.isNaN(sourceLetterSpacing)) {
 		posterEditor.style.letterSpacing = `${sourceLetterSpacing * posterScale}px`;
 	}
-
-	if (!sourceOverlay || !posterOverlay) {
-		return;
-	}
-
-	const sourceOverlayStyle = window.getComputedStyle(sourceOverlay);
-	const sourceOverlayLineHeight = parseFloat(sourceOverlayStyle.lineHeight);
-	const sourceOverlayLetterSpacing = parseFloat(sourceOverlayStyle.letterSpacing);
-
-	posterOverlay.style.fontSize = `${parseFloat(sourceOverlayStyle.fontSize) * posterScale}px`;
-	posterOverlay.style.padding = scaleBoxValue(sourceOverlayStyle.padding, posterScale);
-	posterOverlay.style.lineHeight = Number.isNaN(sourceOverlayLineHeight)
-		? sourceOverlayStyle.lineHeight
-		: `${sourceOverlayLineHeight * posterScale}px`;
-
-	if (!Number.isNaN(sourceOverlayLetterSpacing)) {
-		posterOverlay.style.letterSpacing = `${sourceOverlayLetterSpacing * posterScale}px`;
-	}
 }
 
 function addEmptyState() {
@@ -235,15 +217,13 @@ function addEmptyState() {
 
 function posterToData(poster) {
 	const editor = poster.querySelector('.cartel-editor');
-	const overlay = poster.querySelector('.cartel-overlay-text');
 
 	return {
 		text: editor ? editor.textContent : '',
 		boardColor: poster.style.getPropertyValue('--board-color'),
 		boardScale: poster.style.getPropertyValue('--board-scale'),
 		boardWeight: poster.style.getPropertyValue('--board-weight'),
-		overlayText: overlay ? overlay.textContent : '',
-		overlayOffset: poster.style.getPropertyValue('--layers-offset'),
+		layersShadow: poster.style.getPropertyValue('--layers-shadow'),
 		cartelMode: poster.dataset.cartelMode || 'font',
 		left: poster.style.left,
 		top: poster.style.top,
@@ -272,7 +252,6 @@ function createPosterFromData(data) {
 	const poster = document.createElement('div');
 	const wrapper = document.createElement('div');
 	const editor = document.createElement('div');
-	const overlay = document.createElement('div');
 	const posterMode = data.cartelMode || 'font';
 
 	poster.className = 'cartel-board protesta-post';
@@ -281,7 +260,7 @@ function createPosterFromData(data) {
 	poster.style.setProperty('--overlay-color', getHighlightColorForBoardColor(data.boardColor || '#d8ff00'));
 	poster.style.setProperty('--board-scale', data.boardScale || '1.15');
 	poster.style.setProperty('--board-weight', data.boardWeight || '100');
-	poster.style.setProperty('--layers-offset', data.overlayOffset || '0px');
+	poster.style.setProperty('--layers-shadow', data.layersShadow || 'none');
 	poster.style.left = data.left || '0px';
 	poster.style.top = data.top || '0px';
 	poster.style.zIndex = data.zIndex || String(protestaZIndex);
@@ -299,12 +278,7 @@ function createPosterFromData(data) {
 	editor.style.lineHeight = data.editorLineHeight || '';
 	editor.style.letterSpacing = data.editorLetterSpacing || '';
 
-	overlay.className = 'cartel-overlay-text';
-	overlay.textContent = data.overlayText || data.text || '';
-	overlay.style.display = posterMode === 'font' ? 'none' : 'grid';
-
 	wrapper.appendChild(editor);
-	wrapper.appendChild(overlay);
 	poster.appendChild(wrapper);
 	makePosterDraggable(poster);
 
@@ -481,16 +455,13 @@ if (cartelModeScale && cartelBoard) {
 
 		if (cartelMode === 'font') {
 			cartelBoard.style.setProperty('--board-weight', value);
-			if (cartelOverlayText) {
-				cartelOverlayText.style.display = 'none';
-			}
+			cartelBoard.style.setProperty('--layers-shadow', 'none');
 			return;
 		}
 
-		cartelBoard.style.setProperty('--layers-offset', `${value}px`);
-		if (cartelOverlayText) {
-			cartelOverlayText.style.display = 'grid';
-		}
+		const color = cartelBoard.style.getPropertyValue('--overlay-color') || '#ff2bd6';
+		const shadow = buildLayersShadow(Number(value), color);
+		cartelBoard.style.setProperty('--layers-shadow', shadow);
 	});
 }
 
@@ -505,11 +476,6 @@ if (cartelPublishButton && cartelBoard && protestaGallery) {
 		poster.classList.add('protesta-post');
 		poster.removeAttribute('aria-label');
 		poster.dataset.cartelMode = cartelMode;
-
-		const posterOverlay = poster.querySelector('.cartel-overlay-text');
-		if (posterOverlay) {
-			posterOverlay.style.display = cartelMode === 'font' ? 'none' : 'grid';
-		}
 
 		const clonedEditor = poster.querySelector('.cartel-editor');
 		if (clonedEditor) {
@@ -539,7 +505,6 @@ if (cartelPublishButton && cartelBoard && protestaGallery) {
 
 updateCartelModeControl();
 updatePublishState();
-syncCartelOverlayText();
 activateSection(getInitialSectionId());
 restoreProtestaPosters();
 

@@ -14,7 +14,7 @@ style.css
 @font-face {
     font-family: 'Capas';
     src: url('./cartulinacapas-cartulina.woff2');
-    font-weight: 100 900;
+    font-weight: 100 500;
     font-style: normal;
 }
 
@@ -883,32 +883,11 @@ body {
 .cartel-editor {
     position: relative;
     z-index: 2;
+    text-shadow: var(--layers-shadow, none);
+    transition: text-shadow 120ms ease;
 }
 
-.cartel-overlay-text {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    display: grid;
-    place-items: center;
-    width: 100%;
-    min-height: 100%;
-    padding: clamp(1rem, 3vw, 3rem);
-    color: var(--overlay-color, #2a2a2a);
-    font-family: 'Cartulina', sans-serif;
-    font-variation-settings: 'wght' var(--board-weight, 100);
-    font-size: calc(clamp(2rem, 4vw, 4.2rem) * var(--board-scale, 1.15));
-    line-height: 0.92;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.01em;
-    white-space: pre-wrap;
-    word-break: break-word;
-    transform: translateX(var(--layers-offset, 0px));
-    transform-origin: center center;
-    transition: transform 120ms ease;
-    pointer-events: none;
-}
+
 
 .cartel-publish {
     /* Boton para publicar el cartel en la seccion Protesta. */
