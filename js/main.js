@@ -1,9 +1,6 @@
 /*
-  JS PRINCIPAL
-  - Controla el menu de secciones.
-  - Construye el carrusel de fotos de "Acerca".
-  - Hace funcionar la herramienta "Crea tu cartel".
-  - Guarda y restaura carteles publicados en "Protesta" usando localStorage.
+María Labarthe
+main.js
 */
 
 // ELEMENTOS GENERALES DE NAVEGACION
@@ -15,9 +12,18 @@ const sections = document.querySelectorAll('.docs-section');
 const cartelBoard = document.querySelector('#cartel .cartel-board');
 const cartelEditor = document.querySelector('#cartel .cartel-editor');
 const cartelScale = document.querySelector('#cartel-size');
-const cartelFontScale = document.querySelector('#cartel-font');
+const cartelModeButtons = document.querySelectorAll('[data-cartel-mode]');
+const cartelModeScale = document.querySelector('#cartel-mode-scale');
+const cartelModeLabel = document.querySelector('.cartel-scale-label');
+const cartelOverlayText = document.querySelector('#cartel .cartel-overlay-text');
 const cartelColorButtons = document.querySelectorAll('[data-cartel-color]');
 const cartelPublishButton = document.querySelector('#cartel-publish');
+
+let cartelMode = 'font';
+const cartelModeValues = {
+  font: Number(cartelModeScale?.value || 100),
+  layers: 0,
+};
 
 // ELEMENTOS DE LA SECCION "PROTESTA"
 const protestaGallery = document.querySelector('#protesta-gallery');
@@ -116,6 +122,56 @@ function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
 
+function getHighlightColorForBoardColor(color) {
+  const normalized = String(color).trim().toLowerCase();
+
+  switch (normalized) {
+    case '#39ff14':
+      return '#000000';
+    case '#ff2bd6':
+      return 'rgb(255, 251, 0)';
+    case '#d8ff00':
+      return '#ff2bd6';
+    default:
+      return '#2a2a2a';
+  }
+}
+
+function setCartelBoardHighlightColor(color) {
+  if (!cartelBoard) {
+    return;
+  }
+
+  const highlightColor = getHighlightColorForBoardColor(color);
+  cartelBoard.style.setProperty('--overlay-color', highlightColor);
+}
+
+function updateCartelModeControl() {
+  if (!cartelModeScale || !cartelModeLabel || !cartelOverlayText) {
+    return;
+  }
+
+  const isFontMode = cartelMode === 'font';
+  cartelModeLabel.textContent = isFontMode ? 'Condensado' : 'Capas';
+
+  if (isFontMode) {
+    cartelModeScale.min = '75';
+    cartelModeScale.max = '100';
+    cartelModeScale.step = '1';
+    cartelModeScale.value = String(cartelModeValues.font);
+    cartelOverlayText.style.display = 'none';
+    if (cartelBoard) {
+      cartelBoard.style.setProperty('--layers-offset', '0px');
+    }
+  } else {
+    cartelModeScale.min = '-2';
+    cartelModeScale.max = '3';
+    cartelModeScale.step = '0.1';
+    cartelModeScale.value = String(cartelModeValues.layers);
+    cartelOverlayText.style.display = 'grid';
+  }
+}
+
 // Hace que el cartel seleccionado quede por encima de los demas.
 function bringPosterToFront(poster) {
   protestaZIndex += 1;
@@ -128,6 +184,14 @@ function canPublishPoster() {
   const hasColor = Array.from(cartelColorButtons).some((item) => item.classList.contains('is-active'));
 
   return hasText && hasColor;
+}
+
+function syncCartelOverlayText() {
+  if (!cartelEditor || !cartelOverlayText) {
+    return;
+  }
+
+  cartelOverlayText.textContent = cartelEditor.textContent;
 }
 
 // Actualiza el estado enabled/disabled del boton de publicar.
@@ -156,7 +220,9 @@ function preservePosterLayout(poster) {
   const sourceRect = cartelBoard.getBoundingClientRect();
   const sourceBoardStyle = window.getComputedStyle(cartelBoard);
   const sourceEditor = cartelBoard.querySelector('.cartel-editor');
+  const sourceOverlay = cartelBoard.querySelector('.cartel-overlay-text');
   const posterEditor = poster.querySelector('.cartel-editor');
+  const posterOverlay = poster.querySelector('.cartel-overlay-text');
   const posterScale = window.matchMedia('(max-width: 700px)').matches ? 0.52 : 0.42;
 
   poster.style.width = `${sourceRect.width * posterScale}px`;
@@ -181,6 +247,22 @@ function preservePosterLayout(poster) {
   if (!Number.isNaN(sourceLetterSpacing)) {
     posterEditor.style.letterSpacing = `${sourceLetterSpacing * posterScale}px`;
   }
+
+  if (sourceOverlay && posterOverlay) {
+    const sourceOverlayStyle = window.getComputedStyle(sourceOverlay);
+    const sourceOverlayLineHeight = parseFloat(sourceOverlayStyle.lineHeight);
+    const sourceOverlayLetterSpacing = parseFloat(sourceOverlayStyle.letterSpacing);
+
+    posterOverlay.style.fontSize = `${parseFloat(sourceOverlayStyle.fontSize) * posterScale}px`;
+    posterOverlay.style.padding = scaleBoxValue(sourceOverlayStyle.padding, posterScale);
+    posterOverlay.style.lineHeight = Number.isNaN(sourceOverlayLineHeight)
+      ? sourceOverlayStyle.lineHeight
+      : `${sourceOverlayLineHeight * posterScale}px`;
+
+    if (!Number.isNaN(sourceOverlayLetterSpacing)) {
+      posterOverlay.style.letterSpacing = `${sourceOverlayLetterSpacing * posterScale}px`;
+    }
+  }
 }
 
 // Muestra el mensaje cuando no hay carteles publicados.
@@ -198,12 +280,18 @@ function addEmptyState() {
 // Convierte un cartel del DOM en datos guardables.
 function posterToData(poster) {
   const editor = poster.querySelector('.cartel-editor');
+  const overlay = poster.querySelector('.cartel-overlay-text');
 
   return {
     text: editor ? editor.textContent : '',
     boardColor: poster.style.getPropertyValue('--board-color'),
     boardScale: poster.style.getPropertyValue('--board-scale'),
     boardWeight: poster.style.getPropertyValue('--board-weight'),
+    boardStretch: poster.style.getPropertyValue('--board-stretch'),
+    boardWidth: poster.style.getPropertyValue('--board-width'),
+    overlayText: overlay ? overlay.textContent : '',
+    overlayOffset: poster.style.getPropertyValue('--layers-offset'),
+    cartelMode: poster.dataset.cartelMode || 'font',
     left: poster.style.left,
     top: poster.style.top,
     zIndex: poster.style.zIndex,
@@ -231,12 +319,20 @@ function saveProtestaPosters() {
 // Reconstruye un cartel a partir de datos guardados.
 function createPosterFromData(data) {
   const poster = document.createElement('div');
+  const wrapper = document.createElement('div');
   const editor = document.createElement('div');
+  const overlay = document.createElement('div');
+  const posterMode = data.cartelMode || 'font';
 
   poster.className = 'cartel-board protesta-post';
-  poster.style.setProperty('--board-color', data.boardColor || 'rgba(255, 255, 255, 0.98)');
+  poster.dataset.cartelMode = posterMode;
+  poster.style.setProperty('--board-color', data.boardColor || '#d8ff00');
+  poster.style.setProperty('--overlay-color', getHighlightColorForBoardColor(data.boardColor || '#d8ff00'));
   poster.style.setProperty('--board-scale', data.boardScale || '1.15');
   poster.style.setProperty('--board-weight', data.boardWeight || '600');
+  poster.style.setProperty('--board-stretch', data.boardStretch || '100%');
+  poster.style.setProperty('--board-width', data.boardWidth || '100');
+  poster.style.setProperty('--layers-offset', data.overlayOffset || '0px');
   poster.style.left = data.left || '0px';
   poster.style.top = data.top || '0px';
   poster.style.zIndex = data.zIndex || String(protestaZIndex);
@@ -245,6 +341,8 @@ function createPosterFromData(data) {
   poster.style.aspectRatio = data.aspectRatio || '';
   poster.style.padding = data.padding || '';
 
+  wrapper.className = 'cartel-texts';
+
   editor.className = 'cartel-editor';
   editor.textContent = data.text || '';
   editor.style.fontSize = data.editorFontSize || '';
@@ -252,7 +350,13 @@ function createPosterFromData(data) {
   editor.style.lineHeight = data.editorLineHeight || '';
   editor.style.letterSpacing = data.editorLetterSpacing || '';
 
-  poster.appendChild(editor);
+  overlay.className = 'cartel-overlay-text';
+  overlay.textContent = data.overlayText || data.text || '';
+  overlay.style.display = posterMode === 'font' ? 'none' : 'grid';
+
+  wrapper.appendChild(editor);
+  wrapper.appendChild(overlay);
+  poster.appendChild(wrapper);
   makePosterDraggable(poster);
 
   return poster;
@@ -507,6 +611,7 @@ if (cartelColorButtons.length && cartelBoard) {
       const selectedColor = colorButton.dataset.cartelColor;
 
       cartelBoard.style.setProperty('--board-color', selectedColor);
+      setCartelBoardHighlightColor(selectedColor);
 
       cartelColorButtons.forEach((item) => {
         item.classList.toggle('is-active', item === colorButton);
@@ -515,11 +620,20 @@ if (cartelColorButtons.length && cartelBoard) {
       updatePublishState();
     });
   });
+
+  const initialColorButton = Array.from(cartelColorButtons).find((item) => item.classList.contains('is-active'));
+  if (initialColorButton) {
+    cartelBoard.style.setProperty('--board-color', initialColorButton.dataset.cartelColor);
+    setCartelBoardHighlightColor(initialColorButton.dataset.cartelColor);
+  }
 }
 
 // Si el usuario escribe o borra texto, se revisa si ya puede publicar.
 if (cartelEditor) {
-  cartelEditor.addEventListener('input', updatePublishState);
+  cartelEditor.addEventListener('input', () => {
+    syncCartelOverlayText();
+    updatePublishState();
+  });
 }
 
 // Slider de tamano del texto del cartel.
@@ -529,12 +643,42 @@ if (cartelScale && cartelBoard) {
   });
 }
 
-// Slider de variable/peso de la tipografia del cartel.
-if (cartelFontScale && cartelBoard) {
-  cartelFontScale.addEventListener('input', () => {
-    cartelBoard.style.setProperty('--board-weight', cartelFontScale.value);
+// Botones de modo: Condensado o Capas.
+if (cartelModeButtons.length) {
+  cartelModeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const selectedMode = button.dataset.cartelMode;
+
+      if (!selectedMode || selectedMode === cartelMode) {
+        return;
+      }
+
+      cartelMode = selectedMode;
+      cartelModeButtons.forEach((item) => {
+        item.classList.toggle('is-active', item === button);
+      });
+      updateCartelModeControl();
+    });
   });
 }
+
+if (cartelModeScale && cartelBoard) {
+  cartelModeScale.addEventListener('input', () => {
+    const value = cartelModeScale.value;
+    cartelModeValues[cartelMode] = Number(value);
+
+    if (cartelMode === 'font') {
+      cartelBoard.style.setProperty('--board-stretch', `${value}%`);
+      cartelBoard.style.setProperty('--board-width', value);
+      cartelOverlayText.style.display = 'none';
+    } else {
+      cartelBoard.style.setProperty('--layers-offset', `${value}px`);
+      cartelOverlayText.style.display = 'grid';
+    }
+  });
+}
+
+updateCartelModeControl();
 
 // Publica el cartel: clona la cartulina editable y la manda a Protesta.
 if (cartelPublishButton && cartelBoard && protestaGallery) {
@@ -547,6 +691,12 @@ if (cartelPublishButton && cartelBoard && protestaGallery) {
     const poster = cartelBoard.cloneNode(true);
     poster.classList.add('protesta-post');
     poster.removeAttribute('aria-label');
+    poster.dataset.cartelMode = cartelMode;
+
+    const posterOverlay = poster.querySelector('.cartel-overlay-text');
+    if (posterOverlay) {
+      posterOverlay.style.display = cartelMode === 'font' ? 'none' : 'grid';
+    }
 
     const clonedEditor = poster.querySelector('.cartel-editor');
     if (clonedEditor) {
