@@ -6,7 +6,7 @@ style.css
 /* TIPOGRAFIAS: los archivos estan en la carpeta css/. */
 @font-face {
     font-family: 'Cartulina';
-    src: url('./cartulina-Regular.woff2') format('woff2');
+    src: url('./cartulinaVF.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
