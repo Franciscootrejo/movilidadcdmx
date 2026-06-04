@@ -103,6 +103,22 @@ function setCartelBoardHighlightColor(color) {
 	}
 
 	cartelBoard.style.setProperty('--overlay-color', getHighlightColorForBoardColor(color));
+
+	if (cartelMode === 'layers') {
+		updateCartelLayersShadow();
+	}
+}
+
+function updateCartelLayersShadow() {
+	if (!cartelBoard) {
+		return;
+	}
+
+	const boardColor = cartelBoard.style.getPropertyValue('--board-color') || '#d8ff00';
+	const shadowColor = cartelBoard.style.getPropertyValue('--overlay-color') || getHighlightColorForBoardColor(boardColor);
+	const shadow = buildLayersShadow(cartelModeValues.layers, boardColor, shadowColor);
+
+	cartelBoard.style.setProperty('--layers-shadow', shadow);
 }
 
 function updateCartelModeControl() {
@@ -124,13 +140,12 @@ function updateCartelModeControl() {
 		return;
 	}
 
-	cartelModeScale.min = '-30';
-	cartelModeScale.max = '30';
+	cartelModeScale.min = '-3';
+	cartelModeScale.max = '3';
 	cartelModeScale.step = '1';
 	cartelModeScale.value = String(cartelModeValues.layers);
 	if (cartelBoard) {
-		const shadow = buildLayersShadow(cartelModeValues.layers, cartelBoard.style.getPropertyValue('--overlay-color') || '#ff2bd6');
-		cartelBoard.style.setProperty('--layers-shadow', shadow);
+		updateCartelLayersShadow();
 	}
 }
 
@@ -146,12 +161,11 @@ function canPublishPoster() {
 	return hasText && hasColor;
 }
 
-function buildLayersShadow(offset, color) {
+function buildLayersShadow(offset, boardColor, shadowColor) {
 	if (!offset || offset === 0) {
 		return 'none';
 	}
-	// Construye una sombra doble: ligera + densa, para simular el efecto de capa.
-	return `${offset}px 0 0 ${color}, ${offset * 2}px 0 0 ${color}88`;
+	return `${offset}px 0 0 ${boardColor}, ${offset * 2}px 0 0 ${shadowColor}`;
 }
 
 function updatePublishState() {
@@ -419,7 +433,6 @@ if (cartelColorButtons.length && cartelBoard) {
 
 if (cartelEditor) {
 	cartelEditor.addEventListener('input', () => {
-		syncCartelOverlayText();
 		updatePublishState();
 	});
 }
@@ -459,9 +472,7 @@ if (cartelModeScale && cartelBoard) {
 			return;
 		}
 
-		const color = cartelBoard.style.getPropertyValue('--overlay-color') || '#ff2bd6';
-		const shadow = buildLayersShadow(Number(value), color);
-		cartelBoard.style.setProperty('--layers-shadow', shadow);
+		updateCartelLayersShadow();
 	});
 }
 
