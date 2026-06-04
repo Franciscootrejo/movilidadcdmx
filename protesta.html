@@ -11,16 +11,18 @@
 -->
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <!-- Configuracion basica de la pagina -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- CAMBIAR: titulo que aparece en la pestana del navegador. -->
-    <title>Documentación Movilidad CDMX</title>
+    <title>Protesta | Puesto al Paso</title>
     <link rel="stylesheet" href="https://use.typekit.net/ivu6xvr.css">
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/protesta.css">
 </head>
+
 <body>
     <!-- Barra superior con menu y logo -->
     <header class="topbar docs-topbar">
@@ -32,65 +34,82 @@
             </summary>
             <nav class="menu-panel" aria-label="Secciones">
                 <!-- CAMBIAR: textos del menu. data-section debe coincidir con el id de cada <section>. -->
-                <button type="button" data-section="acerca">Acerca del proyecto</button>
                 <button type="button" data-section="cartel">Crea tu cartel</button>
                 <button type="button" data-section="protesta">Protesta</button>
             </nav>
         </details>
 
-        <!-- CAMBIAR LOGO: reemplaza ../ims/logo.png si cambias la marca. -->
-        <a class="brand-logo" href="../" aria-label="Puesto al paso">
-            <img src="../ims/logo.png" alt="Puesto al paso">
+        <!-- CAMBIAR LOGO: reemplaza ./ims/logo.png si cambias la marca. -->
+        <a class="brand-logo" href="./" aria-label="Puesto al paso">
+            <img src="./ims/logo.png" alt="Puesto al paso">
         </a>
     </header>
 
     <!-- Contenido principal -->
     <main class="docs-main">
-          <!-- SECCION CARTEL: herramienta para escribir, cambiar color y publicar cartel. -->
+        <!-- SECCION CARTEL: herramienta para escribir, cambiar color y publicar cartel. -->
+        <!-- SECCION CARTEL: herramienta para escribir, cambiar color y publicar cartel. -->
         <section id="cartel" class="docs-section is-active">
             <div class="cartel-stage">
                 <div class="cartel-aside">
                     <!-- CAMBIAR: titulo del modulo de cartel. Cada <span> es una linea. -->
                     <h1 class="cartel-title"><span>*CREA TU*</span><span>CARTEL DE</span><span>PROTESTA</span></h1>
                     <div class="cartel-title-ornaments" aria-hidden="true">
-                        <img class="cartel-title-ornament cartel-title-ornament--top" src="../ims/svg/subraya1.svg" alt="">
-                        <img class="cartel-title-ornament cartel-title-ornament--bottom" src="../ims/svg/subraya2.svg" alt="">
+                        <img class="cartel-title-ornament cartel-title-ornament--top" src="./ims/svg/subraya1.svg"
+                            alt="">
+                        <img class="cartel-title-ornament cartel-title-ornament--bottom" src="./ims/svg/subraya2.svg"
+                            alt="">
                     </div>
+
 
                     <div class="cartel-guides" aria-hidden="true">
-                        <div class="cartel-guide cartel-guide--type">
-                            <p>¡Explora con la tipografía!</p>
-                            <img src="../ims/svg/flecha_recta.svg" alt="">
-                        </div>
                         <div class="cartel-guide cartel-guide--color">
                             <p>Elige el color de tu cartulina</p>
-                            <img src="../ims/svg/flecha_curva.svg" alt="">
+                            <img src="./ims/svg/flecha_curva.svg" alt="">
                         </div>
                     </div>
-
+                    <!-- CAMBIAR COLORES: edita data-cartel-color y --swatch con el mismo color. -->
+                    <div class="cartel-swatches" aria-label="Colores de cartulina">
+                        <button type="button" class="is-active" data-cartel-color="#d8ff00"
+                            aria-label="Cartulina amarillo fosforescente" style="--swatch: #d8ff00;"></button>
+                        <button type="button" data-cartel-color="#39ff14" aria-label="Cartulina verde fosforescente"
+                            style="--swatch: #39ff14;"></button>
+                        <button type="button" data-cartel-color="#ff2bd6" aria-label="Cartulina rosa fosforescente"
+                            style="--swatch: #ff2bd6;"></button>
+                    </div>
                     <!-- CONTROL: cambia la escala/tamano del texto escrito en la cartulina. -->
                     <label class="cartel-scale" for="cartel-size">
                         <span>Tamaño</span>
                         <input id="cartel-size" type="range" min="0.95" max="1.55" step="0.01" value="1.15">
                     </label>
 
-                    <!-- CONTROL: cambia el peso/variable visual de la tipografia del cartel. -->
-                    <label class="cartel-scale cartel-scale--font" for="cartel-font">
-                        <span>Condensado</span>
-                        <input id="cartel-font" type="range" min="200" max="900" step="1" value="600">
-                    </label>
+                    <div class="cartel-mode">
+                        <div class="cartel-mode-buttons" role="group" aria-label="Elige modo de ajuste">
+                            <button type="button" class="cartel-mode-button is-active"
+                                data-cartel-mode="font">Condensado</button>
+                            <button type="button" class="cartel-mode-button" data-cartel-mode="layers">Capas</button>
+                        </div>
+                        <label class="cartel-scale cartel-scale--mode" for="cartel-mode-scale">
+                            <span class="cartel-scale-label">Condensado</span>
+                            <input id="cartel-mode-scale" type="range" min="75" max="100" step="1" value="100">
+                        </label>
+                    </div>
+                    <div class="cartel-guides-2" aria-hidden="true">
+                        <div class="cartel-guide cartel-guide--type">
+                            <p>¡Explora con la tipografía!</p>
+                            <img src="./ims/svg/flecha_recta.svg" alt="">
+                        </div>
 
-                    <!-- CAMBIAR COLORES: edita data-cartel-color y --swatch con el mismo color. -->
-                    <div class="cartel-swatches" aria-label="Colores de cartulina">
-                        <button type="button" data-cartel-color="#d8ff00" aria-label="Cartulina amarillo fosforescente" style="--swatch: #d8ff00;"></button>
-                        <button type="button" data-cartel-color="#39ff14" aria-label="Cartulina verde fosforescente" style="--swatch: #39ff14;"></button>
-                        <button type="button" data-cartel-color="#ff2bd6" aria-label="Cartulina rosa fosforescente" style="--swatch: #ff2bd6;"></button>
                     </div>
                 </div>
 
                 <!-- AREA EDITABLE: el usuario escribe aqui. El placeholder se cambia en data-placeholder. -->
                 <div class="cartel-board" aria-label="Cartulina editable">
-                    <div class="cartel-editor" contenteditable="true" spellcheck="false" data-placeholder="Escribe aquí"></div>
+                    <div class="cartel-texts">
+                        <div class="cartel-editor" contenteditable="true" spellcheck="false"
+                            data-placeholder="Escribe aquí"></div>
+                        <div class="cartel-overlay-text" aria-hidden="true"></div>
+                    </div>
                 </div>
             </div>
 
@@ -98,10 +117,27 @@
             <button type="button" class="cartel-publish" id="cartel-publish" disabled>Publica y protesta</button>
         </section>
 
+        <!-- SECCION PROTESTA: recibe los carteles publicados y permite moverlos. -->
+        <section id="protesta" class="docs-section">
+            <div class="protesta-stage">
+                <h1>Protesta</h1>
+                <p class="protesta-intro">Aquí aparece el cartel que publicaste para convertirlo en parte de la
+                    protesta.</p>
+                <div class="protesta-gallery-wrap">
+                    <div class="protesta-gallery" id="protesta-gallery" aria-live="polite">
+                        <p class="protesta-empty">Todavía no has publicado un cartel.</p>
+                    </div>
+                    <button type="button" class="protesta-reset" id="protesta-reset">Reiniciar</button>
+                </div>
+            </div>
+        </section>
+
     </main>
     <footer class="site-footer">
-        Proyecto movilidad 2026 | Francisco Trejo y María Labarthe
+        <p>Proyecto movilidad 2026 | Francisco Trejo y María Labarthe</p>
     </footer>
-    <script src="../js/protesta.js"></script>
+    <script src="./js/protesta.js"></script>
+
 </body>
+
 </html>
