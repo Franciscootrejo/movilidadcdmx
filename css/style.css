@@ -70,7 +70,11 @@ body {
     overflow-x: hidden;
 }
 
+strong {
+    color: var(--accent-color);
+    font-weight: 500;
 
+}
 
 /* FOOTER DE PORTADA: variante amarilla sobre la imagen principal. */
 .hero-body .site-footer {
@@ -315,13 +319,14 @@ body {
     line-height: 0.92;
     text-transform: uppercase;
     text-shadow: 0.06em 0.06em 0 rgba(20, 0, 15, 0.45);
+    margin-bottom: 1em;
 }
 
 .about-carousel {
     /* CARRUSEL: cambia aqui el ancho general y espacio entre subtitulo y fotos. */
     --about-slide-width: min(74vw, 48rem);
     position: relative;
-    margin-top: clamp(3.75rem, 9vh, 5.75rem);
+    /* margin-top: clamp(3.75rem, 9vh, 5.75rem); */
     overflow: visible;
     padding-block: 0;
 }
@@ -341,7 +346,7 @@ body {
     left: 50%;
     display: block;
     width: var(--about-slide-width);
-    height: min(58vh, 36rem);
+    /* height: min(58vh, 36rem); */
     margin: 0;
     overflow: visible;
     background: transparent;
@@ -402,11 +407,11 @@ body {
 .about-slide-caption {
     /* Subtitulo tipo pelicula: solo se muestra dentro de la imagen central activa. */
     position: absolute;
-    bottom: clamp(0.8rem, 2vh, 1.35rem);
+    bottom: 1EM;
     left: 50%;
     width: min(94%, 50rem);
     margin: 0;
-    padding: 0.18rem 0.45rem;
+    1EM: 0.18rem 0.45rem;
     color: var(--text-color);
     font-family: var(--text-font), sans-serif;
     font-size: clamp(0.78rem, 1.08vw, 0.94rem);
@@ -424,7 +429,7 @@ body {
 
 .about-slide.is-active .about-slide-caption {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    /* transform: translateX(-50%) translateY(0); */
 }
 
 .about-statement {
@@ -498,10 +503,6 @@ body {
         margin-inline: -1rem;
     }
 
-    .about-slide {
-        height: min(46vh, 24rem);
-    }
-
     .about-slide-caption {
         width: min(92%, 26rem);
         font-size: clamp(0.72rem, 2.8vw, 0.84rem);
@@ -523,6 +524,7 @@ body {
     }
 
     .about-statement {
+        --about-conclusion-gap: 0;
         width: min(100%, 34rem);
         margin-top: var(--about-conclusion-gap);
     }
