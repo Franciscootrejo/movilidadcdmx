@@ -20,6 +20,7 @@ const cartelPublishButton = document.querySelector('#cartel-publish');
 const protestaGallery = document.querySelector('#protesta-gallery');
 const protestaResetButton = document.querySelector('#protesta-reset');
 const protestaStorageKey = 'puestoAlPaso.protestaPosters';
+const API_URL_POSTS = 'https://centro.juanfuent.es/api/posts';
 
 let protestaZIndex = 10;
 let cartelMode = 'font';
@@ -188,33 +189,54 @@ function preservePosterLayout(poster) {
 		return;
 	}
 
+	const stage = document.querySelector('.cartel-stage');
+	if (!stage) return;
+
+	const originalVisibility = poster.style.visibility;
+	const originalPosition = poster.style.position;
+	
+	poster.style.visibility = 'hidden';
+	poster.style.position = 'absolute';
+	stage.appendChild(poster);
+
 	const sourceRect = cartelBoard.getBoundingClientRect();
-	const sourceBoardStyle = window.getComputedStyle(cartelBoard);
-	const sourceEditor = cartelBoard.querySelector('.cartel-editor');
-	const posterEditor = poster.querySelector('.cartel-editor');
 	const posterScale = window.matchMedia('(max-width: 700px)').matches ? 0.52 : 0.42;
+	
+	const targetSize = Math.max(290, sourceRect.width * posterScale);
 
-	poster.style.width = `${sourceRect.width * posterScale}px`;
-	poster.style.height = `${sourceRect.height * posterScale}px`;
-	poster.style.aspectRatio = `${sourceRect.width} / ${sourceRect.height}`;
-	poster.style.padding = scaleBoxValue(sourceBoardStyle.padding, posterScale);
+	const sourceBoardStyle = window.getComputedStyle(poster);
+	const posterPadding = scaleBoxValue(sourceBoardStyle.padding, posterScale);
 
-	if (!sourceEditor || !posterEditor) {
-		return;
+	const posterEditor = poster.querySelector('.cartel-editor');
+	
+	let editorFontSize, editorPadding, editorLineHeight, editorLetterSpacing;
+	if (posterEditor) {
+		const editorStyle = window.getComputedStyle(posterEditor);
+		editorFontSize = parseFloat(editorStyle.fontSize);
+		editorPadding = editorStyle.padding;
+		editorLineHeight = parseFloat(editorStyle.lineHeight);
+		editorLetterSpacing = parseFloat(editorStyle.letterSpacing);
 	}
 
-	const sourceEditorStyle = window.getComputedStyle(sourceEditor);
-	const sourceLineHeight = parseFloat(sourceEditorStyle.lineHeight);
-	const sourceLetterSpacing = parseFloat(sourceEditorStyle.letterSpacing);
+	stage.removeChild(poster);
+	poster.style.visibility = originalVisibility || '';
+	poster.style.position = originalPosition || '';
 
-	posterEditor.style.fontSize = `${parseFloat(sourceEditorStyle.fontSize) * posterScale}px`;
-	posterEditor.style.padding = scaleBoxValue(sourceEditorStyle.padding, posterScale);
-	posterEditor.style.lineHeight = Number.isNaN(sourceLineHeight)
-		? sourceEditorStyle.lineHeight
-		: `${sourceLineHeight * posterScale}px`;
+	poster.style.width = `${targetSize}px`;
+	poster.style.height = `${targetSize}px`;
+	poster.style.aspectRatio = `1 / 1`;
+	poster.style.padding = posterPadding;
 
-	if (!Number.isNaN(sourceLetterSpacing)) {
-		posterEditor.style.letterSpacing = `${sourceLetterSpacing * posterScale}px`;
+	if (posterEditor) {
+		posterEditor.style.fontSize = `${editorFontSize * posterScale}px`;
+		posterEditor.style.padding = scaleBoxValue(editorPadding, posterScale);
+		posterEditor.style.lineHeight = Number.isNaN(editorLineHeight)
+			? ''
+			: `${editorLineHeight * posterScale}px`;
+
+		if (!Number.isNaN(editorLetterSpacing)) {
+			posterEditor.style.letterSpacing = `${editorLetterSpacing * posterScale}px`;
+		}
 	}
 }
 
@@ -253,13 +275,53 @@ function posterToData(poster) {
 	};
 }
 
-function saveProtestaPosters() {
+async function saveProtestaPosters() {
 	if (!protestaGallery) {
 		return;
 	}
 
-	const posters = Array.from(protestaGallery.querySelectorAll('.protesta-post')).map(posterToData);
-	window.localStorage.setItem(protestaStorageKey, JSON.stringify(posters));
+	const posters = Array.from(protestaGallery.querySelectorAll('.protesta-post'));
+	
+	for (const poster of posters) {
+		const data = posterToData(poster);
+		const postId = poster.dataset.postId;
+		
+		const apiPayload = {
+			content: data.text,
+			bg: data.boardColor,
+			color: getHighlightColorForBoardColor(data.boardColor),
+			shadow: data.cartelMode === 'font' ? 'none' : (data.layersShadow || 'none'),
+			size: parseFloat(data.boardScale) || 1.15,
+			wght: parseInt(data.boardWeight, 10) || 100,
+			status: 'published',
+			left: data.left,
+			top: data.top
+		};
+
+		try {
+			const method = postId ? 'PUT' : 'POST';
+			const url = postId ? `${API_URL_POSTS}/${postId}` : API_URL_POSTS;
+			
+			const res = await fetch(url, {
+				method: method,
+				headers: {
+					'Content-Type': 'application/json',
+					'Accept': 'application/json',
+					'X-Requested-With': 'XMLHttpRequest'
+				},
+				body: JSON.stringify({ post: apiPayload })
+			});
+			
+			if (res.ok && !postId) {
+				const savedPost = await res.json();
+				if (savedPost && savedPost.id) {
+					poster.dataset.postId = savedPost.id;
+				}
+			}
+		} catch (error) {
+			console.error('Error al guardar el cartel en la API.', error);
+		}
+	}
 }
 
 function createPosterFromData(data) {
@@ -299,7 +361,7 @@ function createPosterFromData(data) {
 	return poster;
 }
 
-function restoreProtestaPosters() {
+async function restoreProtestaPosters() {
 	if (!protestaGallery) {
 		return;
 	}
@@ -307,9 +369,16 @@ function restoreProtestaPosters() {
 	let savedPosters = [];
 
 	try {
-		savedPosters = JSON.parse(window.localStorage.getItem(protestaStorageKey) || '[]');
+		const res = await fetch(`${API_URL_POSTS}?t=${Date.now()}`, {
+			headers: {
+				'Accept': 'application/json',
+				'X-Requested-With': 'XMLHttpRequest'
+			}
+		});
+		if (!res.ok) throw new Error(`Status: ${res.status}`);
+		savedPosters = await res.json();
 	} catch (error) {
-		window.localStorage.removeItem(protestaStorageKey);
+		console.error('Ocurrió un error al cargar los carteles desde la API.', error);
 	}
 
 	if (!savedPosters.length) {
@@ -321,8 +390,39 @@ function restoreProtestaPosters() {
 		emptyState.remove();
 	}
 
-	savedPosters.forEach((data) => {
+	savedPosters.forEach((apiObj) => {
+		let shadowValue = apiObj.shadow;
+		const isLayers = shadowValue && shadowValue !== 'none' && shadowValue !== '0px';
+
+		if (isLayers) {
+			if (shadowValue.startsWith('#')) {
+				shadowValue = buildLayersShadow(2, apiObj.bg, shadowValue);
+			} else if (shadowValue.split(' ').length === 1) {
+				const offsetVal = parseFloat(shadowValue) || 2;
+				shadowValue = buildLayersShadow(offsetVal, apiObj.bg, getHighlightColorForBoardColor(apiObj.bg));
+			}
+		} else {
+			shadowValue = 'none';
+		}
+
+		const data = {
+			id: apiObj.id,
+			text: apiObj.content,
+			boardColor: apiObj.bg,
+			boardScale: apiObj.size || '1.15',
+			boardWeight: apiObj.wght,
+			layersShadow: shadowValue,
+			cartelMode: isLayers ? 'layers' : 'font',
+			left: apiObj.left || `${Math.floor(Math.random() * 200 + 50)}px`,
+			top: apiObj.top || `${Math.floor(Math.random() * 200 + 50)}px`,
+		};
+
 		const poster = createPosterFromData(data);
+		if (data.id) {
+			poster.dataset.postId = data.id;
+		}
+
+		preservePosterLayout(poster);
 		protestaGallery.appendChild(poster);
 		protestaZIndex = Math.max(protestaZIndex, parseInt(poster.style.zIndex, 10) || protestaZIndex);
 	});
@@ -520,10 +620,26 @@ activateSection(getInitialSectionId());
 restoreProtestaPosters();
 
 if (protestaResetButton && protestaGallery) {
-	protestaResetButton.addEventListener('click', () => {
-		protestaGallery.querySelectorAll('.protesta-post').forEach((poster) => {
+	protestaResetButton.addEventListener('click', async () => {
+		const posters = protestaGallery.querySelectorAll('.protesta-post');
+		
+		for (const poster of posters) {
+			const postId = poster.dataset.postId;
+			if (postId) {
+				try {
+					await fetch(`${API_URL_POSTS}/${postId}`, {
+						method: 'DELETE',
+						headers: {
+							'Accept': 'application/json',
+							'X-Requested-With': 'XMLHttpRequest'
+						}
+					});
+				} catch (error) {
+					console.error('Error al borrar cartel de la API', error);
+				}
+			}
 			poster.remove();
-		});
+		}
 
 		window.localStorage.removeItem(protestaStorageKey);
 		addEmptyState();
