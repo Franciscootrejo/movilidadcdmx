@@ -1,5 +1,5 @@
 <!--
-María Labarthe 
+María Labarthe y Francisco Trejo
 index.html
 
 -->
@@ -46,27 +46,22 @@ index.html
         <!-- SECCION ACERCA: cambia aqui el titulo principal y los dos parrafos de entrada. -->
         <section id="acerca" class="docs-section is-active">
             <div class="about-hero">
-                <h1 class="about-title">Acerca del proyecto</h1>
+                <h1 class="about-title about-title--svg">
+    <img src="../ims/svg/comercio_ambulante.svg" alt="Comercio ambulante">
+</h1>
                 <div class="about-copy">
-                    <p>En la <strong>Ciudad de México</strong>, una gran parte del <strong>consumo cotidiano</strong> no
-                        ocurre dentro de espacios “formales”, sino en aquellos de <strong>tránsito</strong>. </p>
-                    <p>
-                        Se come al salir del <strong>metro</strong>, entre <strong>transbordos</strong>, antes de entrar
-                        a trabajar o de regresar a casa. No es una elección casual, responde a <strong>jornadas
-                            largas</strong>, <strong>tiempos de traslado</strong> extendidos y <strong>recursos
-                            económicos limitados</strong>.</p>
-                    <p>En este contexto, los <strong>puestos ambulantes de alimentos</strong> no son un elemento aislado
-                        ni circunstancial. Aparecen donde hay <strong>flujo peatonal</strong>,
-                        <strong>concentración</strong> y <strong>espera</strong>. Su ubicación no es arbitraria, está
-                        directamente ligada a la <strong>movilidad</strong>.
-                    </p>
+                    <p>En la <strong>Ciudad de México</strong>, una gran parte del <strong>consumo cotidiano</strong> no ocurre dentro de espacios “formales”, sino en aquellos de <strong>tránsito</strong>.</p>
+
+<p>Se come al salir del metro, entre transbordos, antes de entrar a trabajar o de regresar a casa. No es una elección casual, responde a <strong>jornadas largas</strong>, <strong>tiempos de traslado</strong> extendidos y <strong>recursos económicos limitados</strong>.</p>
+
+<p>En este contexto, los <strong>puestos ambulantes de comida</strong> no son un elemento aislado ni circunstancial. Aparecen donde hay <strong>flujo peatonal</strong>, concentración y espera. Su ubicación no es arbitraria, está directamente ligada a la <strong>movilidad</strong>.</p>
                 </div>
             </div>
 
             <!-- BLOQUE DEL CARRUSEL: las imagenes se cargan desde js/main.js. -->
             <div class="about-exploracion" id="exploracion-campo">
                 <!-- CAMBIAR: subtitulo del carrusel. -->
-                <h2 class="about-subtitle">Exploración de campo</h2>
+                <h2 class="about-subtitle">*Exploración de campo*</h2>
                 <div class="about-carousel" aria-label="Carrusel de exploración de campo">
                     <!-- No poner imagenes aqui: JavaScript las crea automaticamente. -->
                     <div class="about-carousel-track" id="about-carousel-track"></div>
@@ -74,16 +69,11 @@ index.html
 
                 <!-- CAMBIAR: texto de conclusion. Mantener 3 <p> si quieres conservar el ritmo actual. -->
                 <div class="about-statement">
-                    <p>Los <strong>puestos de comida</strong> no solo ocupan <strong>espacio público</strong>, responden
-                        a él.</p>
-                    <p>Funcionan como una <strong>infraestructura flexible</strong> que se adapta a los ritmos de la
-                        <strong>ciudad</strong>, a sus <strong>tiempos muertos</strong> y a sus
-                        <strong>desigualdades</strong>.
-                    </p>
-                    <p>Pensarlos únicamente como un problema de <strong>informalidad</strong> impide entender que su
-                        <strong>existencia</strong> está directamente vinculada a la forma en que se
-                        <strong>vive</strong> y se <strong>recorre la ciudad</strong>.
-                    </p>
+                    <p>Los <strong>puestos de comida</strong> no solo ocupan espacio público, responden a él.</p>
+
+<p>Funcionan como una <strong>infraestructura flexible</strong> que se adapta a los <strong>ritmos</strong> de la ciudad, a sus <strong>tiempos</strong> muertos y a sus <strong>desigualdades</strong>.</p>
+
+<p>Pensarlos únicamente como un problema de informalidad impide entender que su existencia está directamente vinculada a la forma en que se vive y se <strong>recorre la ciudad</strong>.</p>
                 </div>
 
 
@@ -95,19 +85,14 @@ index.html
             <div class="cartel-stage">
                 <div class="cartel-aside">
                     <!-- CAMBIAR: titulo del modulo de cartel. Cada <span> es una linea. -->
-                    <h1 class="cartel-title"><span>*CREA TU*</span><span>CARTEL DE</span><span>PROTESTA</span></h1>
-                    <div class="cartel-title-ornaments" aria-hidden="true">
-                        <img class="cartel-title-ornament cartel-title-ornament--top" src="../ims/svg/subraya1.svg"
-                            alt="">
-                        <img class="cartel-title-ornament cartel-title-ornament--bottom" src="../ims/svg/subraya2.svg"
-                            alt="">
-                    </div>
+                    <h1 class="cartel-title cartel-title--svg">
+    <img src="../ims/svg/crea_protesta.svg" alt="Crea tu cartel de protesta">
+</h1>
 
 
                     <div class="cartel-guides" aria-hidden="true">
                         <div class="cartel-guide cartel-guide--color">
                             <p>Elige el color de tu cartulina</p>
-                            <img src="../ims/svg/flecha_curva.svg" alt="">
                         </div>
                     </div>
                     <!-- CAMBIAR COLORES: edita data-cartel-color y --swatch con el mismo color. -->
@@ -122,7 +107,7 @@ index.html
                     <!-- CONTROL: cambia la escala/tamano del texto escrito en la cartulina. -->
                     <label class="cartel-scale" for="cartel-size">
                         <span>Tamaño</span>
-                        <input id="cartel-size" type="range" min="0.95" max="1.55" step="0.01" value="1.15">
+                        <input id="cartel-size" type="range" min="0.95" max="1.55" step="0.01" value="1.25">
                     </label>
 
                     <div class="cartel-mode">

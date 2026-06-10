@@ -1,5 +1,5 @@
 /*
-MarÃ­a Labarthe
+Mari­a Labarthe y Francisco Trejo
 style.css
 */
 
@@ -241,23 +241,8 @@ strong {
     text-shadow: none;
 }
 
-/* Rayas decorativas debajo del titulo. */
-.about-title::after,
-.about-title::before {
-    content: "";
-    display: block;
-    width: 84%;
-    height: 0.16rem;
-    margin-top: 0.18rem;
-    background: currentColor;
-    transform: skewX(-12deg);
-}
 
-.about-title::before {
-    width: 62%;
-    margin-top: 0.36rem;
-    margin-left: 16%;
-}
+
 
 /* Texto introductorio de la derecha en la seccion Acerca. */
 #acerca .about-copy {
@@ -642,6 +627,19 @@ strong {
     text-transform: uppercase;
     transform: rotate(-4deg);
     text-shadow: 0.08em 0.08em 0 rgba(20, 0, 15, 0.42);
+}
+
+.cartel-title--svg {
+    display: block;
+    width: min(100%, 22rem);
+    transform: rotate(-4deg);
+    text-shadow: none;
+}
+
+.cartel-title--svg img {
+    display: block;
+    width: 100%;
+    height: auto;
 }
 
 .cartel-title span {

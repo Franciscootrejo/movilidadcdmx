@@ -1,5 +1,5 @@
 /*
-María Labarthe
+María Labarthe y Francisco Trejo
 protesta.js
 */
 

@@ -1,5 +1,5 @@
 /*
-María Labarthe
+María Labarthe y Francisco Trejo
 main.js
 */
 
@@ -21,8 +21,8 @@ const cartelPublishButton = document.querySelector('#cartel-publish');
 
 let cartelMode = 'font';
 const cartelModeValues = {
-  font: Number(cartelModeScale?.value || 100),
-  layers: 0,
+  font: 300,
+  layers: 0.5,
 };
 
 // ELEMENTOS DE LA SECCION "PROTESTA"
@@ -203,6 +203,7 @@ function updateCartelModeControl() {
     cartelModeScale.max = '500';
     cartelModeScale.step = '1';
     cartelModeScale.value = String(cartelModeValues.font);
+    cartelBoard.style.setProperty('--board-weight', cartelModeValues.font);
     cartelOverlayText.style.display = 'none';
     if (cartelBoard) {
       cartelBoard.style.setProperty('--layers-offset', '0px');
