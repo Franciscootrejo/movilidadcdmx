@@ -41,16 +41,12 @@ function setup() {
     editorDOM.style.caretColor = '#14000f'; 
     editorDOM.style.zIndex = '2';
     
-    // Se amarra el método de descarga al botón existente "cartel-download" y a "protesta-reset"
+    // Se amarra el método de descarga al botón existente "cartel-download".
     let downloadBtn = document.querySelector('#cartel-download');
     if (downloadBtn) {
         downloadBtn.addEventListener('click', downloadPoster);
     }
-    
-    let resetBtn = document.querySelector('#protesta-reset');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', downloadPoster);
-    }
+
 }
 
 function draw() {
@@ -74,10 +70,14 @@ function draw() {
     clear();
     
     let rawText = editorDOM.innerText;
-    if (!rawText || rawText.trim().length === 0) {
-        rawText = editorDOM.getAttribute('data-placeholder') || "ESCRIBE AQUÍ";
+    const hasUserText = Boolean(rawText && rawText.trim().length > 0);
+    const isPlaceholder = !hasUserText;
+
+    if (!hasUserText) {
+        rawText = editorDOM.getAttribute('data-placeholder') || 'Escribe aquí';
+    } else {
+        rawText = rawText.toUpperCase();
     }
-    rawText = rawText.toUpperCase();
     
     let bgColor = boardDOM.style.getPropertyValue('--board-color') || '#d8ff00';
     let boardScale = parseFloat(boardDOM.style.getPropertyValue('--board-scale') || '1.15');
@@ -89,10 +89,10 @@ function draw() {
     let layersOffset = parseFloat(modeScaleDOM ? modeScaleDOM.value : '0');
     
     // Render visual sobre pantalla
-    drawPoster(this, width, height, rawText, bgColor, boardScale, boardWeight, mode, layersOffset, false);
+    drawPoster(this, width, height, rawText, bgColor, boardScale, boardWeight, mode, layersOffset, false, isPlaceholder);
 }
 
-function drawPoster(pg, w, h, textStr, bgColor, boardScale, boardWeight, mode, layersOffset, isExport) {
+function drawPoster(pg, w, h, textStr, bgColor, boardScale, boardWeight, mode, layersOffset, isExport, isPlaceholder = false) {
     if (isExport) {
         pg.background(bgColor);
     } else {
@@ -127,6 +127,7 @@ function drawPoster(pg, w, h, textStr, bgColor, boardScale, boardWeight, mode, l
     pg._textStyle = boardWeight; // Bypass para inyectar el peso variable directamente en el motor de p5
     pg.textAlign(CENTER, CENTER);
     pg.textLeading(finalLineHeight);
+    pg.textStyle(isPlaceholder ? ITALIC : NORMAL);
     
     let shadowColor = getHighlightColorForBoardColor(bgColor);
     
@@ -136,20 +137,21 @@ function drawPoster(pg, w, h, textStr, bgColor, boardScale, boardWeight, mode, l
     let boxH = h - padY * 2;
     
     pg.push();
-    if (mode === 'layers') {
+    if (mode === 'layers' && !isPlaceholder) {
         let offsetPx = layersOffset * scaleFactor;
+        const fillColor = '#2a2a2a';
         
         pg.fill(shadowColor);
-        pg.text(textStr, padX + offsetPx * 2, padY, boxW, boxH);
+        pg.text(textStr, padX + offsetPx * 2, padY + offsetPx * 2, boxW, boxH);
         
         pg.fill(bgColor);
-        pg.text(textStr, padX + offsetPx, padY, boxW, boxH);
+        pg.text(textStr, padX + offsetPx, padY + offsetPx, boxW, boxH);
         
-        pg.fill('#2a2a2a');
+        pg.fill(fillColor);
         pg.text(textStr, padX, padY, boxW, boxH);
         
     } else {
-        pg.fill('#2a2a2a');
+        pg.fill(isPlaceholder ? 'rgba(42, 42, 42, 0.34)' : '#2a2a2a');
         pg.text(textStr, padX, padY, boxW, boxH);
     }
     pg.pop();
@@ -186,10 +188,14 @@ function downloadPoster() {
     if (!boardDOM || !editorDOM) return;
     
     let rawText = editorDOM.innerText;
-    if (!rawText || rawText.trim().length === 0) {
-        rawText = editorDOM.getAttribute('data-placeholder') || "ESCRIBE AQUÍ";
+    const hasUserText = Boolean(rawText && rawText.trim().length > 0);
+    const isPlaceholder = !hasUserText;
+
+    if (!hasUserText) {
+        rawText = editorDOM.getAttribute('data-placeholder') || 'Escribe aquí';
+    } else {
+        rawText = rawText.toUpperCase();
     }
-    rawText = rawText.toUpperCase();
     
     let bgColor = boardDOM.style.getPropertyValue('--board-color') || '#d8ff00';
     let boardScale = parseFloat(boardDOM.style.getPropertyValue('--board-scale') || '1.15');
@@ -208,7 +214,7 @@ function downloadPoster() {
     let h = 1080 / aspect;
     
     let pg = createGraphics(w, h);
-    drawPoster(pg, w, h, rawText, bgColor, boardScale, boardWeight, mode, layersOffset, true);
+    drawPoster(pg, w, h, rawText, bgColor, boardScale, boardWeight, mode, layersOffset, true, isPlaceholder);
     
     save(pg, 'cartel-protesta.png');
 }

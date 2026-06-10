@@ -177,6 +177,14 @@ function updatePublishState() {
 	cartelPublishButton.disabled = !canPublishPoster();
 }
 
+function syncCartelEditorEmptyState() {
+	if (!cartelEditor) {
+		return;
+	}
+
+	cartelEditor.classList.toggle('is-empty', cartelEditor.textContent.trim().length === 0);
+}
+
 function scaleBoxValue(value, scale) {
 	return value
 		.split(' ')
@@ -291,6 +299,7 @@ async function saveProtestaPosters() {
 			bg: data.boardColor,
 			color: getHighlightColorForBoardColor(data.boardColor),
 			shadow: data.cartelMode === 'font' ? 'none' : (data.layersShadow || 'none'),
+			mode: data.cartelMode,
 			size: parseFloat(data.boardScale) || 1.15,
 			wght: parseInt(data.boardWeight, 10) || 100,
 			status: 'published',
@@ -391,16 +400,20 @@ async function restoreProtestaPosters() {
 	}
 
 	savedPosters.forEach((apiObj) => {
+		const savedMode = apiObj.mode === 'layers' ? 'layers' : 'font';
 		let shadowValue = apiObj.shadow;
-		const isLayers = shadowValue && shadowValue !== 'none' && shadowValue !== '0px';
+		const hasLayerShadow = shadowValue && shadowValue !== 'none' && shadowValue !== '0px';
+		const isLayers = savedMode === 'layers' || hasLayerShadow;
 
-		if (isLayers) {
+		if (hasLayerShadow) {
 			if (shadowValue.startsWith('#')) {
 				shadowValue = buildLayersShadow(2, apiObj.bg, shadowValue);
 			} else if (shadowValue.split(' ').length === 1) {
 				const offsetVal = parseFloat(shadowValue) || 2;
 				shadowValue = buildLayersShadow(offsetVal, apiObj.bg, getHighlightColorForBoardColor(apiObj.bg));
 			}
+		} else if (isLayers) {
+			shadowValue = buildLayersShadow(2, apiObj.bg, getHighlightColorForBoardColor(apiObj.bg));
 		} else {
 			shadowValue = 'none';
 		}
@@ -533,6 +546,7 @@ if (cartelColorButtons.length && cartelBoard) {
 
 if (cartelEditor) {
 	cartelEditor.addEventListener('input', () => {
+		syncCartelEditorEmptyState();
 		updatePublishState();
 	});
 }
@@ -615,6 +629,7 @@ if (cartelPublishButton && cartelBoard && protestaGallery) {
 }
 
 updateCartelModeControl();
+syncCartelEditorEmptyState();
 updatePublishState();
 activateSection(getInitialSectionId());
 restoreProtestaPosters();

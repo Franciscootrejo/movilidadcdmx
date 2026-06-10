@@ -29,7 +29,7 @@ const cartelModeValues = {
 const protestaGallery = document.querySelector('#protesta-gallery');
 const protestaResetButton = document.querySelector('#protesta-reset');
 // CAMBIAR: si quieres que el navegador olvide carteles anteriores, cambia este nombre.
-const protestaStorageKey = 'puestoAlPaso.protestaPosters';
+const protestaStorageKey = 'puestoAlPaso.protestaPosters.v3.images';
 const API_URL_POSTS = 'https://centro.juanfuent.es/api/posts';
 
 // ELEMENTOS DEL CARRUSEL DE "ACERCA"
@@ -66,6 +66,13 @@ const aboutPhotoCaptions = [
   'La movilidad cotidiana sostiene la permanencia de estos espacios.',
 ];
 
+const pageTitleBase = 'puestoalpaso';
+const sectionTitles = {
+  acerca: 'Acerca del proyecto',
+  cartel: 'Crea tu cartel',
+  protesta: 'Protesta',
+};
+
 // Estado interno de capas/carteles y posicion actual del carrusel.
 let protestaZIndex = 10;
 let aboutCarouselIndex = 0;
@@ -98,6 +105,9 @@ function activateSection(targetId) {
   if (menu) {
     menu.removeAttribute('open');
   }
+
+  const sectionTitle = sectionTitles[targetId] || sectionTitles.acerca;
+  document.title = `${pageTitleBase} | ${sectionTitle}`;
 }
 
 // Marca visualmente el boton del menu que corresponde a la seccion activa.
@@ -147,6 +157,39 @@ function setCartelBoardHighlightColor(color) {
   cartelBoard.style.setProperty('--overlay-color', highlightColor);
 }
 
+function normalizeLayerOffset(value) {
+  const numeric = parseFloat(value);
+  return Number.isFinite(numeric) ? numeric : 0;
+}
+
+function buildLayerShadow(offsetValue, boardColor) {
+  const offset = normalizeLayerOffset(offsetValue);
+  if (!offset) {
+    return 'none';
+  }
+
+  const highlightColor = getHighlightColorForBoardColor(boardColor || '#d8ff00');
+  return [
+    `${offset}px ${offset}px 0 ${boardColor || '#d8ff00'}`,
+    `${offset * 2}px ${offset * 2}px 0 ${highlightColor}`,
+    `${offset * 3}px ${offset * 3}px 0 rgba(20, 0, 15, 0.28)`,
+  ].join(', ');
+}
+
+function syncLayerEffect() {
+  if (!cartelBoard) {
+    return;
+  }
+
+  const boardColor = cartelBoard.style.getPropertyValue('--board-color') || '#d8ff00';
+  const offset = cartelBoard.style.getPropertyValue('--layers-offset') || '0px';
+  const isLayers = cartelMode === 'layers';
+
+  cartelBoard.classList.toggle('is-layers-mode', isLayers);
+  cartelBoard.style.setProperty('--cartel-font-family', 'Cartulina');
+  cartelBoard.style.setProperty('--layers-shadow', isLayers ? buildLayerShadow(offset, boardColor) : 'none');
+}
+
 function updateCartelModeControl() {
   if (!cartelModeScale || !cartelModeLabel || !cartelOverlayText) {
     return;
@@ -164,12 +207,14 @@ function updateCartelModeControl() {
     if (cartelBoard) {
       cartelBoard.style.setProperty('--layers-offset', '0px');
     }
+    syncLayerEffect();
   } else {
     cartelModeScale.min = '-2';
     cartelModeScale.max = '3';
     cartelModeScale.step = '0.1';
     cartelModeScale.value = String(cartelModeValues.layers);
-    cartelOverlayText.style.display = 'grid';
+    cartelOverlayText.style.display = 'none';
+    syncLayerEffect();
   }
 }
 
@@ -193,6 +238,14 @@ function syncCartelOverlayText() {
   }
 
   cartelOverlayText.textContent = cartelEditor.textContent;
+}
+
+function syncCartelEditorEmptyState() {
+  if (!cartelEditor) {
+    return;
+  }
+
+  cartelEditor.classList.toggle('is-empty', cartelEditor.textContent.trim().length === 0);
 }
 
 // Actualiza el estado enabled/disabled del boton de publicar.
@@ -305,12 +358,125 @@ function addEmptyState() {
   protestaGallery.appendChild(emptyMessage);
 }
 
+
+
+async function createSnapshotPosterFromBoard() {
+  if (!cartelBoard || !cartelEditor) {
+    return null;
+  }
+
+  await document.fonts.ready;
+
+  const sourceRect = cartelBoard.getBoundingClientRect();
+  const posterScale = window.matchMedia('(max-width: 700px)').matches ? 0.46 : 0.42;
+  const exportScale = 2;
+
+  let sourceCanvas = null;
+
+  if (window.html2canvas) {
+    sourceCanvas = await window.html2canvas(cartelBoard, {
+      backgroundColor: null,
+      scale: exportScale,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      width: sourceRect.width,
+      height: sourceRect.height,
+      windowWidth: window.innerWidth,
+      windowHeight: window.innerHeight,
+      onclone: (clonedDocument) => {
+        const clonedBoard = clonedDocument.querySelector('#cartel .cartel-board');
+        const clonedEditor = clonedDocument.querySelector('#cartel .cartel-editor');
+        const clonedOverlay = clonedDocument.querySelector('#cartel .cartel-overlay-text');
+
+        if (clonedBoard) {
+          clonedBoard.style.width = `${sourceRect.width}px`;
+          clonedBoard.style.height = `${sourceRect.height}px`;
+          clonedBoard.style.minHeight = '0';
+          clonedBoard.style.margin = '0';
+          clonedBoard.style.transform = 'none';
+        }
+
+        if (clonedEditor) {
+          clonedEditor.removeAttribute('contenteditable');
+          clonedEditor.removeAttribute('spellcheck');
+          clonedEditor.classList.remove('is-empty');
+          clonedEditor.style.boxShadow = 'none';
+          clonedEditor.style.outline = 'none';
+          clonedEditor.style.caretColor = 'transparent';
+        }
+
+        // La composicion visible ya trae el efecto en el texto principal.
+        // La capa auxiliar solo sirve para editar; al capturar se apaga para no duplicar.
+        if (clonedOverlay) {
+          clonedOverlay.style.display = 'none';
+        }
+      },
+    });
+  }
+
+  if (!sourceCanvas) {
+    return null;
+  }
+
+  const posterWidth = Math.round(sourceRect.width * posterScale);
+  const posterHeight = Math.round(sourceRect.height * posterScale);
+  const reducedCanvas = document.createElement('canvas');
+  reducedCanvas.width = Math.max(1, posterWidth * 2);
+  reducedCanvas.height = Math.max(1, posterHeight * 2);
+
+  const ctx = reducedCanvas.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(sourceCanvas, 0, 0, reducedCanvas.width, reducedCanvas.height);
+
+  const imageData = reducedCanvas.toDataURL('image/png');
+
+  const poster = document.createElement('div');
+  poster.className = 'protesta-post protesta-post--image';
+  poster.dataset.imagePoster = 'true';
+  poster.dataset.cartelMode = cartelMode;
+  poster.dataset.imageData = imageData;
+  poster.dataset.text = cartelEditor.innerText || cartelEditor.textContent || '';
+  poster.style.width = `${posterWidth}px`;
+  poster.style.height = `${posterHeight}px`;
+  poster.style.padding = '0';
+  poster.style.background = 'transparent';
+  poster.style.boxShadow = 'none';
+  poster.style.overflow = 'visible';
+
+  const img = document.createElement('img');
+  img.className = 'protesta-post-image';
+  img.src = imageData;
+  img.alt = 'Cartel publicado';
+  img.draggable = false;
+  poster.appendChild(img);
+
+  return poster;
+}
+
 // Convierte un cartel del DOM en datos guardables.
 function posterToData(poster) {
+  if (poster.dataset.imagePoster === 'true') {
+    return {
+      id: poster.dataset.postId || '',
+      imagePoster: true,
+      imageData: poster.dataset.imageData || poster.querySelector('img')?.src || '',
+      text: poster.dataset.text || '',
+      cartelMode: poster.dataset.cartelMode || 'font',
+      left: poster.style.left,
+      top: poster.style.top,
+      zIndex: poster.style.zIndex,
+      width: poster.style.width,
+      height: poster.style.height,
+    };
+  }
+
   const editor = poster.querySelector('.cartel-editor');
   const overlay = poster.querySelector('.cartel-overlay-text');
 
   return {
+    id: poster.dataset.postId || '',
     text: editor ? editor.textContent : '',
     boardColor: poster.style.getPropertyValue('--board-color'),
     boardScale: poster.style.getPropertyValue('--board-scale'),
@@ -332,16 +498,48 @@ function posterToData(poster) {
   };
 }
 
+function getCurrentPosterDataList() {
+  if (!protestaGallery) {
+    return [];
+  }
+
+  return Array.from(protestaGallery.querySelectorAll('.protesta-post')).map(posterToData);
+}
+
+function savePostersLocally() {
+  try {
+    window.localStorage.setItem(protestaStorageKey, JSON.stringify(getCurrentPosterDataList()));
+  } catch (error) {
+    console.error('No se pudieron guardar los carteles localmente.', error);
+  }
+}
+
+function readLocalPosters() {
+  try {
+    const raw = window.localStorage.getItem(protestaStorageKey);
+    return raw ? JSON.parse(raw) : [];
+  } catch (error) {
+    console.error('No se pudieron leer los carteles locales.', error);
+    return [];
+  }
+}
+
 // Guarda los carteles publicados en la API.
 async function saveProtestaPosters() {
   if (!protestaGallery) {
     return;
   }
 
+  savePostersLocally();
+
   const posters = Array.from(protestaGallery.querySelectorAll('.protesta-post'));
   
   for (const poster of posters) {
     const data = posterToData(poster);
+
+    if (data.imagePoster) {
+      continue;
+    }
     const postId = poster.dataset.postId;
     
     const apiPayload = {
@@ -349,6 +547,7 @@ async function saveProtestaPosters() {
       bg: data.boardColor,
       color: getHighlightColorForBoardColor(data.boardColor),
       shadow: data.cartelMode === 'font' ? 'none' : (data.overlayOffset || '2px'),
+      mode: data.cartelMode,
       size: parseFloat(data.boardScale) || 1.15,
       wght: parseInt(data.boardWeight, 10) || 100,
       status: 'published',
@@ -374,6 +573,7 @@ async function saveProtestaPosters() {
         const savedPost = await res.json();
         if (savedPost && savedPost.id) {
           poster.dataset.postId = savedPost.id;
+          savePostersLocally();
         }
       }
     } catch (error) {
@@ -384,6 +584,34 @@ async function saveProtestaPosters() {
 
 // Reconstruye un cartel a partir de datos guardados.
 function createPosterFromData(data) {
+  if (data && data.imagePoster && data.imageData) {
+    const poster = document.createElement('div');
+    poster.className = 'protesta-post protesta-post--image';
+    poster.dataset.imagePoster = 'true';
+    poster.dataset.cartelMode = data.cartelMode || 'font';
+    poster.dataset.imageData = data.imageData;
+    poster.dataset.text = data.text || '';
+    poster.style.left = data.left || '0px';
+    poster.style.top = data.top || '0px';
+    poster.style.zIndex = data.zIndex || String(protestaZIndex);
+    poster.style.width = data.width || '290px';
+    poster.style.height = data.height || '290px';
+    poster.style.padding = '0';
+    poster.style.background = 'transparent';
+    poster.style.boxShadow = 'none';
+    poster.style.overflow = 'visible';
+
+    const img = document.createElement('img');
+    img.className = 'protesta-post-image';
+    img.src = data.imageData;
+    img.alt = 'Cartel publicado';
+    img.draggable = false;
+    poster.appendChild(img);
+
+    makePosterDraggable(poster);
+    return poster;
+  }
+
   const poster = document.createElement('div');
   const wrapper = document.createElement('div');
   const editor = document.createElement('div');
@@ -391,12 +619,15 @@ function createPosterFromData(data) {
   const posterMode = data.cartelMode || 'font';
 
   poster.className = 'cartel-board protesta-post';
+  poster.classList.toggle('is-layers-mode', posterMode === 'layers');
   poster.dataset.cartelMode = posterMode;
   poster.style.setProperty('--board-color', data.boardColor || '#d8ff00');
   poster.style.setProperty('--overlay-color', getHighlightColorForBoardColor(data.boardColor || '#d8ff00'));
   poster.style.setProperty('--board-scale', data.boardScale || '1.15');
   poster.style.setProperty('--board-weight', data.boardWeight || '100');
   poster.style.setProperty('--layers-offset', data.overlayOffset || '0px');
+  poster.style.setProperty('--layers-shadow', buildLayerShadow(data.overlayOffset || '0px', data.boardColor || '#d8ff00'));
+  poster.style.setProperty('--cartel-font-family', 'Cartulina');
   poster.style.left = data.left || '0px';
   poster.style.top = data.top || '0px';
   poster.style.zIndex = data.zIndex || String(protestaZIndex);
@@ -432,22 +663,56 @@ async function restoreProtestaPosters() {
     return;
   }
 
-  let savedPosters = [];
+  const localPosters = readLocalPosters();
+  let apiPosters = [];
 
-  try {
-    const res = await fetch(`${API_URL_POSTS}?t=${Date.now()}`, {
-      headers: {
-        'Accept': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
-      }
-    });
-    if (!res.ok) throw new Error(`Status: ${res.status}`);
-    savedPosters = await res.json();
-  } catch (error) {
-    console.error('Ocurrió un error al cargar los carteles desde la API.', error);
-  }
+  // Para que no regresen carteles antiguos o rotos desde la API,
+  // la protesta se reconstruye desde las imágenes guardadas localmente.
+  apiPosters = [];
 
-  if (!savedPosters.length) {
+  const normalizedApiPosters = apiPosters.map((apiObj) => {
+    const savedMode = apiObj.mode === 'layers' ? 'layers' : 'font';
+    const hasLayerShadow = apiObj.shadow && apiObj.shadow !== 'none' && apiObj.shadow !== '0px';
+    const isLayers = savedMode === 'layers' || hasLayerShadow;
+    let offset = '0px';
+
+    if (hasLayerShadow) {
+      const match = String(apiObj.shadow).match(/(-?\d+(\.\d+)?)px/);
+      offset = match ? match[0] : '2px';
+    } else if (isLayers) {
+      offset = '2px';
+    }
+
+    return {
+      id: apiObj.id || '',
+      text: apiObj.content || '',
+      boardColor: apiObj.bg || '#d8ff00',
+      boardScale: apiObj.size || '1.15',
+      boardWeight: apiObj.wght || '100',
+      overlayText: apiObj.content || '',
+      overlayOffset: offset,
+      cartelMode: isLayers ? 'layers' : 'font',
+      left: apiObj.left || '',
+      top: apiObj.top || '',
+      zIndex: apiObj.zIndex || '',
+    };
+  });
+
+  const mergedPosters = [];
+  const seenIds = new Set();
+
+  [...localPosters, ...normalizedApiPosters].forEach((posterData) => {
+    const id = posterData.id ? String(posterData.id) : '';
+    if (id && seenIds.has(id)) {
+      const index = mergedPosters.findIndex((item) => String(item.id) === id);
+      if (index >= 0) mergedPosters[index] = { ...mergedPosters[index], ...posterData };
+      return;
+    }
+    if (id) seenIds.add(id);
+    mergedPosters.push(posterData);
+  });
+
+  if (!mergedPosters.length) {
     return;
   }
 
@@ -456,36 +721,28 @@ async function restoreProtestaPosters() {
     emptyState.remove();
   }
 
-  savedPosters.forEach((apiObj) => {
-    const isLayers = apiObj.shadow && apiObj.shadow !== 'none' && apiObj.shadow !== '0px';
-    let offset = '0px';
-    
-    if (isLayers) {
-      const match = String(apiObj.shadow).match(/(-?\d+(\.\d+)?)px/);
-      offset = match ? match[0] : '2px';
-    }
+  protestaGallery.querySelectorAll('.protesta-post').forEach((poster) => poster.remove());
 
-    const data = {
-      id: apiObj.id,
-      text: apiObj.content,
-      boardColor: apiObj.bg,
-      boardScale: apiObj.size || '1.15',
-      boardWeight: apiObj.wght,
-      overlayOffset: offset,
-      cartelMode: isLayers ? 'layers' : 'font',
-      left: apiObj.left || `${Math.floor(Math.random() * 200 + 50)}px`,
-      top: apiObj.top || `${Math.floor(Math.random() * 200 + 50)}px`,
-    };
+  mergedPosters.forEach((data, index) => {
+    const poster = createPosterFromData({
+      ...data,
+      left: data.left || `${Math.floor(Math.random() * 200 + 50)}px`,
+      top: data.top || `${Math.floor(Math.random() * 200 + 50)}px`,
+      zIndex: data.zIndex || String(protestaZIndex + index + 1),
+    });
 
-    const poster = createPosterFromData(data);
     if (data.id) {
       poster.dataset.postId = data.id;
     }
-    
-    preservePosterLayout(poster);
+
+    if (poster.dataset.imagePoster !== 'true') {
+      preservePosterLayout(poster);
+    }
     protestaGallery.appendChild(poster);
     protestaZIndex = Math.max(protestaZIndex, parseInt(poster.style.zIndex, 10) || protestaZIndex);
   });
+
+  savePostersLocally();
 }
 
 // Coloca un cartel recien publicado al centro de la galeria.
@@ -546,14 +803,35 @@ function makePosterDraggable(poster) {
   });
 
   poster.addEventListener('pointerup', (event) => {
-    if (!dragState || event.pointerId !== dragState.pointerId) {
+  if (!dragState || event.pointerId !== dragState.pointerId) {
+    return;
+  }
+
+  const trash = document.querySelector('#protesta-trash');
+
+  if (trash) {
+    const trashRect = trash.getBoundingClientRect();
+
+    const isOverTrash =
+      event.clientX >= trashRect.left &&
+      event.clientX <= trashRect.right &&
+      event.clientY >= trashRect.top &&
+      event.clientY <= trashRect.bottom;
+
+    if (isOverTrash) {
+      poster.remove();
+      poster.releasePointerCapture(event.pointerId);
+      dragState = null;
+      savePostersLocally();
+      addEmptyState();
       return;
     }
+  }
 
-    poster.releasePointerCapture(event.pointerId);
-    dragState = null;
-    saveProtestaPosters();
-  });
+  poster.releasePointerCapture(event.pointerId);
+  dragState = null;
+  saveProtestaPosters();
+});
 
   poster.addEventListener('pointercancel', () => {
     dragState = null;
@@ -708,6 +986,7 @@ if (cartelColorButtons.length && cartelBoard) {
 
       cartelBoard.style.setProperty('--board-color', selectedColor);
       setCartelBoardHighlightColor(selectedColor);
+      syncLayerEffect();
 
       cartelColorButtons.forEach((item) => {
         item.classList.toggle('is-active', item === colorButton);
@@ -721,6 +1000,7 @@ if (cartelColorButtons.length && cartelBoard) {
   if (initialColorButton) {
     cartelBoard.style.setProperty('--board-color', initialColorButton.dataset.cartelColor);
     setCartelBoardHighlightColor(initialColorButton.dataset.cartelColor);
+    syncLayerEffect();
   }
 }
 
@@ -728,6 +1008,7 @@ if (cartelColorButtons.length && cartelBoard) {
 if (cartelEditor) {
   cartelEditor.addEventListener('input', () => {
     syncCartelOverlayText();
+    syncCartelEditorEmptyState();
     updatePublishState();
   });
 }
@@ -754,6 +1035,7 @@ if (cartelModeButtons.length) {
         item.classList.toggle('is-active', item === button);
       });
       updateCartelModeControl();
+      syncLayerEffect();
     });
   });
 }
@@ -768,37 +1050,30 @@ if (cartelModeScale && cartelBoard) {
       cartelOverlayText.style.display = 'none';
     } else {
       cartelBoard.style.setProperty('--layers-offset', `${value}px`);
-      cartelOverlayText.style.display = 'grid';
+      cartelBoard.style.setProperty('--layers-shadow', buildLayerShadow(`${value}px`, cartelBoard.style.getPropertyValue('--board-color')));
+      cartelOverlayText.style.display = 'none';
     }
   });
 }
 
 updateCartelModeControl();
+syncCartelEditorEmptyState();
 
-// Publica el cartel: clona la cartulina editable y la manda a Protesta.
+// Publica el cartel: congela la cartulina como una instantánea DOM escalada.
+// Así no cambia el tamaño ni se recalculan los saltos de línea al pasar a Protesta.
 if (cartelPublishButton && cartelBoard && protestaGallery) {
-  cartelPublishButton.addEventListener('click', () => {
+  cartelPublishButton.addEventListener('click', async () => {
     if (!canPublishPoster()) {
       updatePublishState();
       return;
     }
 
-    const poster = cartelBoard.cloneNode(true);
-    poster.classList.add('protesta-post');
-    poster.removeAttribute('aria-label');
-    poster.dataset.cartelMode = cartelMode;
-
-    const posterOverlay = poster.querySelector('.cartel-overlay-text');
-    if (posterOverlay) {
-      posterOverlay.style.display = cartelMode === 'font' ? 'none' : 'grid';
+    cartelPublishButton.disabled = true;
+    const poster = await createSnapshotPosterFromBoard();
+    updatePublishState();
+    if (!poster) {
+      return;
     }
-
-    const clonedEditor = poster.querySelector('.cartel-editor');
-    if (clonedEditor) {
-      clonedEditor.removeAttribute('contenteditable');
-      clonedEditor.removeAttribute('spellcheck');
-    }
-    preservePosterLayout(poster);
 
     const emptyState = protestaGallery.querySelector('.protesta-empty');
     if (emptyState) {
@@ -824,31 +1099,3 @@ syncActiveMenuButton();
 restoreProtestaPosters();
 buildAboutCarousel();
 setupAboutExplorationReveal();
-
-// Boton Reiniciar: borra carteles publicados y limpia localStorage.
-if (protestaResetButton && protestaGallery) {
-  protestaResetButton.addEventListener('click', async () => {
-    const posters = protestaGallery.querySelectorAll('.protesta-post');
-    
-    for (const poster of posters) {
-      const postId = poster.dataset.postId;
-      if (postId) {
-        try {
-          await fetch(`${API_URL_POSTS}/${postId}`, {
-            method: 'DELETE',
-            headers: {
-              'Accept': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest'
-            }
-          });
-        } catch (error) {
-          console.error('Error al borrar cartel de la API', error);
-        }
-      }
-      poster.remove();
-    }
-
-    window.localStorage.removeItem(protestaStorageKey);
-    addEmptyState();
-  });
-}
